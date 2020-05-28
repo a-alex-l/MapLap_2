@@ -1,0 +1,8 @@
+//
+// Created by alex on 28/05/2020.
+//
+
+#ifndef MAPLAP2_0_LINEDETECTOR_HPP
+#define MAPLAP2_0_LINEDETECTOR_HPP
+
+#endif //MAPLAP2_0_LINEDETECTOR_HPP
