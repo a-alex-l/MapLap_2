@@ -1,32 +1,32 @@
 #ifndef MAPLAP2_0_POINT_VECTOR_HPP
 #define MAPLAP2_0_POINT_VECTOR_HPP
 
-#include <iostream> //for debug
+#include <iostream> // for debug
 #include <iomanip> // for debug
 
 class PointVector {
 private:
 
-    float x = 0, y = 0;
+    double x = 0, y = 0;
 
 public:
 
-    PointVector(float x, float y) noexcept;
+    PointVector(double x, double y) noexcept;
 
-    PointVector& operator+(PointVector other);
-    PointVector& operator-(PointVector other);
-    PointVector& operator*(float other);
-    PointVector& operator/(float other);
+    PointVector operator*(double other) const noexcept;
+    PointVector operator/(double other) const noexcept;
+    PointVector operator+(PointVector other) const noexcept;
+    PointVector operator-(PointVector other) const noexcept;
 
+    PointVector& operator*=(double other);
+    PointVector& operator/=(double other);
     PointVector& operator+=(const PointVector &other);
     PointVector& operator-=(const PointVector &other);
-    PointVector& operator*=(float other);
-    PointVector& operator/=(float other);
 
-    [[nodiscard]] float get_x() const noexcept;
-    [[nodiscard]] float get_y() const noexcept;
+    [[nodiscard]] double get_x() const noexcept;
+    [[nodiscard]] double get_y() const noexcept;
 
-    friend std::ostream& operator<<(std::ostream &out, const PointVector &v);
+    friend std::ostream& operator<<(std::ostream &out, const PointVector &v); // for debug
 };
 
 
