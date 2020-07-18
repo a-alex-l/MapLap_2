@@ -1,4 +1,4 @@
-#include "PointVector.hpp"
+#include "detector/PointVector.hpp"
 
 PointVector::PointVector(double x, double y) noexcept : x(x), y(y) {}
 

@@ -4,8 +4,6 @@
 class CircleDetector {
 private:
 
-    double circle_filling = 0.95;
-
 public:
 
 

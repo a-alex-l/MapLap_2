@@ -1,4 +1,4 @@
-#include "Line.hpp"
+#include "detector/Line.hpp"
 
 Line::Line(const PointVector &one, const PointVector &two, double line_thick) noexcept:
             first(one), second(two), line_thickness(line_thick) {}

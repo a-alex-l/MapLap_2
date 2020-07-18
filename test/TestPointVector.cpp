@@ -1,5 +1,5 @@
 #include "Catch.hpp"
-#include "PointVector.hpp"
+#include "detector/PointVector.hpp"
 
 bool equal(double a, double b) {
     return -0.0001 < a - b && a - b < 0.001;

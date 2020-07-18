@@ -1,5 +1,5 @@
 #include "Catch.hpp"
-#include "Line.hpp"
+#include "detector/Line.hpp"
 
 bool equal(const PointVector &a, const PointVector &b) {
     return -0.0001f < a.get_x() - b.get_x() && a.get_x() - b.get_x() < 0.001f and
