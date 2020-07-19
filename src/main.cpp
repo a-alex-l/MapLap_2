@@ -1,10 +1,7 @@
-#include <iostream>
 #include "opencv2/opencv.hpp"
 #include "opencv2/opencv_modules.hpp"
 #include "detector/Settings.hpp"
 #include "detector/Preprocessing.hpp"
-
-Settings detector_settings;
 
 int main() {
     cv::Mat img = cv::imread("test_files/TestPreprocessing_1_input.png");
