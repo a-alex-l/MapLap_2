@@ -24,3 +24,22 @@ cv::Mat Preprocessing::find_contour_lines(const cv::Mat &gray_image) {
                 contour_image.at<uchar>(i, j) = 255;
     return contour_image;
 }
+
+static void blur(uchar find, uchar next, cv::Mat &gray_image) {
+    for (int i = 0; i < gray_image.rows; i++)
+        for (int j = 0; j < gray_image.cols; j++)
+            if    ((gray_image.at<uchar>(i - 1, j) == find ||
+                    gray_image.at<uchar>(i + 1, j) == find ||
+                    gray_image.at<uchar>(i, j + 1) == find ||
+                    gray_image.at<uchar>(i, j - 1) == find) &&
+                    gray_image.at<uchar>(i, j) == 255)
+                gray_image.at<uchar>(i, j) = next;
+}
+
+cv::Mat Preprocessing::blur_contour_lines(const cv::Mat &gray_image) {
+    cv::Mat blured_image = gray_image;
+    blur(0, 128, blured_image);
+    blur(128, 190, blured_image);
+    blur(190, 225, blured_image);
+    return blured_image;
+}

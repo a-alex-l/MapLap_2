@@ -11,20 +11,24 @@
 class LineDetector {
 private:
 
+    int circle_radius;
     const cv::Mat &input_contour;
     std::vector<std::pair<int, int>> black_points;
-    std::map<double, std::map<double, int>> lines_parameters_horizontal;
-    std::map<double, std::map<double, int>> lines_parameters_vertical;
+    std::map<double, std::map<double, int>> lines_parameters;
     std::vector<Line> lines;
 
     void find_black_points();
     void find_lines_parameters();
-    void hough_transform_find_parameters();
+    void claster_lines_parameters();
+    void find_lines();
 
+    void show();
 
 public:
 
-    LineDetector(const cv::Mat &input_contours);
+    explicit LineDetector(const cv::Mat &input_contours);
+
+    void detect();
 
 };
 

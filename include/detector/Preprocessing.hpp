@@ -11,6 +11,8 @@ namespace Preprocessing {
 
     cv::Mat find_contour_lines(const cv::Mat &gray_image);
 
+    cv::Mat blur_contour_lines(const cv::Mat &gray_image);
+
 }
 
 #endif //MAPLAP2_0_PREPROCESSING_HPP
