@@ -37,3 +37,11 @@ BoolImage::operator cv::Mat() {
                 answer.at<uchar>(i, j) = 0;
     return answer;
 }
+
+bool BoolImage::operator==(const BoolImage &other) const noexcept {
+    return data == other.data;
+}
+
+bool BoolImage::operator!=(const BoolImage &other) const noexcept {
+    return data != other.data;
+}

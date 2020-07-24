@@ -42,6 +42,7 @@ add_executable(MapLap2_0_Test
         test/Catch.hpp
         test/TestAll.cpp
         test/TestLine.cpp
+        test/TestFration.cpp
         test/TestPointVector.cpp
         test/TestPreprocessing.cpp
 

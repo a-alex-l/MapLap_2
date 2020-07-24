@@ -10,39 +10,40 @@ void CircleDetector::find_black_points() {
 }
 
 void CircleDetector::find_circles_parameters() {
-    std::vector<double> check = {0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9};
+    std::vector<Fraction> check = {Fraction(1)/10, Fraction(3)/10,
+            Fraction(5)/10, Fraction(7)/10, Fraction(9)/10};
     for (int step = 0; step < black_points.size() * 100; step++) {
         int i = rand() % black_points.size(),
             j = rand() % black_points.size(),
             k = rand() % black_points.size();
-        int divider = 2 * (black_points[j].first  - black_points[i].first) *
+        Fraction divider = 2 * (black_points[j].first  - black_points[i].first) *
                           (black_points[k].second - black_points[j].second) -
-                  2 * (black_points[j].second - black_points[i].second) *
-                      (black_points[k].first  - black_points[j].first);
-        if (abs(divider) > 10) {
-            double e = black_points[j].first * black_points[j].first -
+                           2 * (black_points[j].second - black_points[i].second) *
+                          (black_points[k].first  - black_points[j].first);
+        if (divider > 10) {
+            Fraction e = black_points[j].first * black_points[j].first -
                        black_points[i].first * black_points[i].first +
                        black_points[j].second * black_points[j].second -
                        black_points[i].second * black_points[i].second;
-            double f = black_points[k].first * black_points[k].first -
+            Fraction f = black_points[k].first * black_points[k].first -
                        black_points[i].first * black_points[i].first +
                        black_points[k].second * black_points[k].second -
                        black_points[i].second * black_points[i].second;
-            double center_x = ((black_points[k].second - black_points[i].second) * e -
+            Fraction center_x = ((black_points[k].second - black_points[i].second) * e -
                                (black_points[j].second - black_points[i].second) * f) / divider,
                    center_y = ((black_points[j].first - black_points[i].first) * f -
                                (black_points[k].first - black_points[i].first) * e) / divider;
-            double radius = sqrt((center_x - black_points[i].first) * (center_x - black_points[i].first) +
-                                 (center_y - black_points[i].second) * (center_y - black_points[i].second));
-            cv::Mat img_result(cv::Size(input_contour.cols(), input_contour.rows()),
-                               CV_8U, cv::Scalar(255, 255, 255));
-            img_result.at<uchar>(black_points[i].first, black_points[i].second) = 0;
-            img_result.at<uchar>(black_points[j].first, black_points[j].second) = 0;
-            img_result.at<uchar>(black_points[k].first, black_points[k].second) = 0;
-            cv::circle(img_result, cv::Point(center_y, center_x), int(radius), cv::Scalar(150));
-            cv::imshow("img_circles_result", img_result);
-            cv::waitKey();
-            circles_parameters[center_x][center_y][radius]++;
+            center_x.reduce(), center_y.reduce();
+            Fraction radius2 =  (center_x - black_points[i].first).reduce() *
+                                (center_x - black_points[i].first).reduce() +
+                                (center_y - black_points[i].second).reduce() *
+                                (center_y - black_points[i].second).reduce();
+            radius2.reduce();
+            if (0 <= center_x && center_x <= input_contour.cols() && 0 <= center_y &&
+                    center_y <= input_contour.rows() && 1 < radius2 &&
+                    radius2 < input_contour.cols() * input_contour.cols() +
+                    input_contour.rows() + input_contour.rows())
+                circles_parameters[center_x][center_y][radius2]++;
         }
     }
 }
@@ -72,7 +73,8 @@ void CircleDetector::show() {
         for (auto &j : i.second) {
             for (auto &r : j.second) {
                 std::cout << i.first << " " << j.first << " " << r.first << " " << std::endl;
-                cv::circle(img_result, cv::Point(i.first, j.first), int(r.first), cv::Scalar(255 - r.second * 10));
+                cv::circle(img_result, cv::Point(int(i.first), int(j.first)),
+                        int(sqrt(r.first)), cv::Scalar(255 - r.second * 20));
             }
         }
     }

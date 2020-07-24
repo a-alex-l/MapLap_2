@@ -16,6 +16,9 @@ struct BoolImage {  // false == white, true = black !
     [[nodiscard]] int rows() const;
     [[nodiscard]] int cols() const;
 
+    bool operator==(const BoolImage &other) const noexcept;
+    bool operator!=(const BoolImage &other) const noexcept;
+
     std::vector<bool, std::allocator<bool>>::reference operator()(int y, int x);
     bool operator()(int y, int x) const;
 

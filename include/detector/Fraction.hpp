@@ -1,107 +1,72 @@
-/**
- * The MIT License (MIT)
- *
- * Copyright (c) 2014 Daniel Dorndorf <dorndorf@featdd.de>
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- */
-
 #ifndef FRACTION_HPP
 #define FRACTION_HPP
 
-/**
- * Fraction class
- */
+#include "opencv2/opencv.hpp"
+
 class Fraction {
 private:
-    // Fraction parts
-    int numerator = 0, denominator = 1;
-    // Euclidean algorithm for greatest common divisor
-    int euclidean(int a, int b);
+
+    long long numerator = 0;
+    unsigned long long denominator = 1;
+
+    long long euclidean(long long a, long long b);
+
 public:
-    // Constructors
+
     Fraction() = default;
-    Fraction(int Number);
-    Fraction(double Number);
-    Fraction(std::string &FractionString);
-    // Destructur
+    Fraction(int number);
+    Fraction(long long number);
+    Fraction(long long numerator, unsigned long long denominator);
+    Fraction(std::string &fraction_string);
     ~Fraction() = default;
 
-    // Getter and Setter
-    int getNumerator();
-    int getDenominator();
-    void setNumerator(int Numerator);
-    void setDenominator(int Denominator);
+    [[nodiscard]] long long get_numerator() const;
+    [[nodiscard]] unsigned long long get_denominator() const;
 
-    // Fraction functions
-    bool reduce();
-    void convertDoubleToFraction(double Number);
-    double convertFractionToDouble();
-    bool convertStringToFraction(std::string &FractionString);
+    Fraction reduce();
 
-    // Operator overloading functions
-    bool operator<(Fraction fraction);
-    bool operator<=(Fraction fraction);
-    bool operator>(Fraction fraction);
-    bool operator>=(Fraction fraction);
-    bool operator==(Fraction fraction);
-    bool operator!=(Fraction fraction);
-    int operator%(Fraction fraction);
+    void convert_string_to_fraction(std::string &FractionString);
 
-    explicit operator double();
-    explicit operator float();
-    explicit operator int();
-    explicit operator std::string();
+    bool operator<(Fraction fraction) const;
+    bool operator<=(Fraction fraction) const;
+    bool operator>(Fraction fraction) const;
+    bool operator>=(Fraction fraction) const;
+    bool operator==(Fraction fraction) const;
+    bool operator!=(Fraction fraction) const;
 
-    Fraction operator+(Fraction fraction);
+    explicit operator double() const;
+    explicit operator float() const;
+    explicit operator int() const;
+    explicit operator long long() const;
+    explicit operator std::string() const;
+
+    Fraction operator+(Fraction fraction) const;
     Fraction operator+=(Fraction fraction);
+    Fraction operator-(Fraction fraction) const;
     Fraction operator-=(Fraction fraction);
-    Fraction operator-(Fraction fraction);
-    Fraction operator*(Fraction fraction);
+    Fraction operator*(Fraction fraction) const;
     Fraction operator*=(Fraction fraction);
-    Fraction operator/(Fraction fraction);
+    Fraction operator/(Fraction fraction) const;
     Fraction operator/=(Fraction fraction);
 
-    Fraction operator~();
     Fraction operator++();
     Fraction operator--();
 };
 
-/**
- * FractionInputFailException class
- *
- * Exception object extending the c++ standard exceptions
- * Thrown exception can be handled like standard exceptions
-*/
-class FractionInputFailException: public std::exception {
-public:
-    [[nodiscard]] const char* what() const noexcept override { return "Incorrect Input"; }
-};
+extern std::ostream& operator<<(std::ostream &out, const Fraction &Fraction);
+extern std::istream& operator>>(std::istream &in, Fraction &Fraction);
 
-/** Left Shift Operator overloading functions (need to be declared global) */
-std::ostream& operator<<(std::ostream &out, const Fraction &Fraction);
-/** Right Shift Operator overloading functions (need to be declared global) */
-std::istream& operator>>(std::istream &in, const Fraction &Fraction);
+extern Fraction operator+(long long number, Fraction fraction);
+extern Fraction operator-(long long number, Fraction fraction);
+extern Fraction operator*(long long number, Fraction fraction);
+extern Fraction operator/(long long number, Fraction fraction);
 
-Fraction operator+(int Number, Fraction fraction);
-Fraction operator-(int Number, Fraction fraction);
-Fraction operator*(int Number, Fraction fraction);
-Fraction operator/(int Number, Fraction fraction);
+extern bool operator<(long long number, Fraction fraction);
+extern bool operator<=(long long number, Fraction fraction);
+extern bool operator>(long long number, Fraction fraction);
+extern bool operator>=(long long number, Fraction fraction);
+
+Fraction abs(Fraction fraction);
+double sqrt(Fraction fraction);
 
 #endif

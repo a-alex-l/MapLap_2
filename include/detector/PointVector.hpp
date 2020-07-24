@@ -23,6 +23,9 @@ public:
     PointVector& operator+=(const PointVector &other);
     PointVector& operator-=(const PointVector &other);
 
+    bool operator==(const PointVector &other) const noexcept;
+    bool operator!=(const PointVector &other) const noexcept;
+
     [[nodiscard]] Fraction get_x() const noexcept;
     [[nodiscard]] Fraction get_y() const noexcept;
 
