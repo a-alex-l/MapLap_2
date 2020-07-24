@@ -29,12 +29,11 @@
 #include <exception>
 #include "detector/Fraction.hpp"
 
-/***
- * Standard constructor
+/**
+ * Double-convert constructor
 */
-Fraction::Fraction(void) {
-    this->numerator = 0;
-    this->denominator = 0;
+Fraction::Fraction(int Number) {
+    numerator = Number, denominator = 1;
 }
 
 /**
@@ -47,56 +46,51 @@ Fraction::Fraction(double Number) {
 /**
  * String-convert constructor
 */
-Fraction::Fraction(std::string FractionString) {
+Fraction::Fraction(std::string &FractionString) {
     this->convertStringToFraction(FractionString);
 }
-
-/**
- * Standard deconstructor
-*/
-Fraction::~Fraction(void) {}
 
 /**
  * Recursive euclidean function for
  * the greatest common divisor
  */
-long Fraction::euclidean(long a, long b){
+int Fraction::euclidean(int a, int b){
     return b == 0 ? a : this->euclidean(b, a % b);
 }
 
 /**
  * Getter for the numerator
 */
-long Fraction::getNumerator(void) {
+int Fraction::getNumerator() {
     return this->numerator;
 }
 
 /**
  * Getter for the denominator
 */
-long Fraction::getDenominator(void) {
+int Fraction::getDenominator() {
     return this->denominator;
 }
 
 /**
  * Setter for the numerator
 */
-void Fraction::setNumerator(long Numerator) {
+void Fraction::setNumerator(int Numerator) {
     this->numerator = Numerator;
 }
 
 /**
  * Setter for the denominator
 */
-void Fraction::setDenominator(long Denominator) {
+void Fraction::setDenominator(int Denominator) {
     this->denominator = Denominator;
 }
 
 /**
  * Reduce the fraction as low as possible
 */
-bool Fraction::reduce(void) {
-    long gcd(this->euclidean(this->numerator, this->denominator));
+bool Fraction::reduce() {
+    int gcd(this->euclidean(this->numerator, this->denominator));
 
     if (1 < gcd) {
         this->numerator /= gcd;
@@ -123,7 +117,7 @@ void Fraction::convertDoubleToFraction(double Number) {
         this->denominator = this->denominator * 10;
     }
 
-    this->numerator = (long)Number;
+    this->numerator = (int)Number;
 
     this->reduce();
 }
@@ -131,7 +125,7 @@ void Fraction::convertDoubleToFraction(double Number) {
 /**
  * Convert function for fraction to double
 */
-double Fraction::convertFractionToDouble(void) {
+double Fraction::convertFractionToDouble() {
     return (double)this->numerator / (double)this->denominator;
 }
 
@@ -140,8 +134,8 @@ double Fraction::convertFractionToDouble(void) {
  *
  * cut numerator and denominator out of string
 */
-bool Fraction::convertStringToFraction(std::string FractionString) {
-    std::size_t pos = FractionString.find("/");
+bool Fraction::convertStringToFraction(std::string &FractionString) {
+    std::size_t pos = FractionString.find('/');
 
     if (pos != std::string::npos) {
         try {
@@ -151,7 +145,7 @@ bool Fraction::convertStringToFraction(std::string FractionString) {
             return false;
         }
 
-        return (this->denominator == 0) ? false : true;
+        return !this->denominator;
     }
 
     return false;
@@ -202,8 +196,8 @@ bool Fraction::operator!=(Fraction fraction) {
 /**
  * Modulos operator overloading (a/b % x/y = (a*y % b*x) / (b*y))
 */
-long Fraction::operator%(Fraction fraction) {
-    long result;
+int Fraction::operator%(Fraction fraction) {
+    int result;
 
     result = ((this->numerator * fraction.getDenominator()) % (this->denominator * fraction.getNumerator())) / (this->denominator * fraction.getDenominator());
 
@@ -225,10 +219,10 @@ Fraction::operator float() {
 }
 
 /**
- * Long typecast operator overloading
+ * int typecast operator overloading
 */
-Fraction::operator long() {
-    return (long)this->convertFractionToDouble();
+Fraction::operator int() {
+    return (int)this->convertFractionToDouble();
 }
 
 /**
@@ -348,9 +342,37 @@ Fraction Fraction::operator/=(Fraction fraction) {
 }
 
 /**
+ * Addition operator
+*/
+Fraction operator+(int Number, Fraction fraction) {
+    return Fraction(Number) + fraction;
+}
+
+/**
+ * Subtraction operator
+*/
+Fraction operator-(int Number, Fraction fraction) {
+    return Fraction(Number) - fraction;
+}
+
+/**
+ * Multiply operator
+*/
+Fraction operator*(int Number, Fraction fraction) {
+    return Fraction(Number) * fraction;
+}
+
+/**
+ * Division operator
+*/
+Fraction operator/(int Number, Fraction fraction) {
+    return Fraction(Number) / fraction;
+}
+
+/**
  * Complement operator overloading
 */
-Fraction Fraction::operator~(void) {
+Fraction Fraction::operator~() {
     Fraction resultFraction;
 
     if(this->numerator > this->denominator) {
@@ -366,7 +388,7 @@ Fraction Fraction::operator~(void) {
 /**
  * Increment operator overloading
 */
-Fraction Fraction::operator++(void) {
+Fraction Fraction::operator++() {
     this->numerator += 1;
 
     return *this;
@@ -375,7 +397,7 @@ Fraction Fraction::operator++(void) {
 /**
  * Decrement operator overloading
 */
-Fraction Fraction::operator--(void) {
+Fraction Fraction::operator--() {
     this->numerator -= 1;
 
     return *this;
@@ -403,7 +425,7 @@ std::istream& operator>>(std::istream &in, Fraction &Fraction) {
 
     in >> input;
 
-    if (false == Fraction.convertStringToFraction(input)) {
+    if (!Fraction.convertStringToFraction(input)) {
         // Throw own exception object
         throw FractionInputFailException();
     }

@@ -3,6 +3,7 @@
 
 #include "opencv2/opencv.hpp"
 #include "detector/Circle.hpp"
+#include "detector/Fraction.hpp"
 #include "detector/BoolImage.hpp"
 
 class CircleDetector {
@@ -10,7 +11,7 @@ private:
 
     const BoolImage &input_contour;
     std::vector<std::pair<int, int>> black_points;
-    std::map<double, std::map<double, std::map<double, int>>> circles_parameters; //yxr
+    std::map<Fraction, std::map<Fraction, std::map<Fraction, int>>> circles_parameters; //yxr
     std::vector<Circle> circles;
 
     void find_black_points();

@@ -7,6 +7,7 @@
 
 #include "opencv2/opencv.hpp"
 #include "detector/Line.hpp"
+#include "detector/Fraction.hpp"
 #include "detector/BoolImage.hpp"
 
 class LineDetector {
@@ -15,7 +16,7 @@ private:
     int side;
     const BoolImage &input_contour;
     std::vector<std::pair<int, int>> black_points;
-    std::map<double, std::map<double, int>> lines_parameters;
+    std::map<Fraction, std::map<Fraction, int>> lines_parameters;
     std::vector<Line> lines;
 
     void find_black_points();

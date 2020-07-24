@@ -18,6 +18,7 @@ add_executable(MapLap2_0
 
         include/detector/Line.hpp
         include/detector/Circle.hpp
+        include/detector/Fraction.hpp
         include/detector/Detector.hpp
         include/detector/Settings.hpp
         include/detector/BoolImage.hpp
@@ -28,6 +29,7 @@ add_executable(MapLap2_0
 
         src/detector/Line.cpp
         src/detector/Circle.cpp
+        src/detector/Fraction.cpp
         src/detector/Detector.cpp
         src/detector/Settings.cpp
         src/detector/BoolImage.cpp
@@ -45,6 +47,7 @@ add_executable(MapLap2_0_Test
 
         include/detector/Line.hpp
         include/detector/Circle.hpp
+        include/detector/Fraction.hpp
         include/detector/Detector.hpp
         include/detector/Settings.hpp
         include/detector/BoolImage.hpp
@@ -55,6 +58,7 @@ add_executable(MapLap2_0_Test
 
         src/detector/Line.cpp
         src/detector/Circle.cpp
+        src/detector/Fraction.cpp
         src/detector/Detector.cpp
         src/detector/Settings.cpp
         src/detector/BoolImage.cpp

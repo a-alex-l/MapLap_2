@@ -31,28 +31,29 @@
 class Fraction {
 private:
     // Fraction parts
-    long numerator, denominator;
+    int numerator = 0, denominator = 1;
     // Euclidean algorithm for greatest common divisor
-    long euclidean(long a, long b);
+    int euclidean(int a, int b);
 public:
     // Constructors
-    Fraction(void);
+    Fraction() = default;
+    Fraction(int Number);
     Fraction(double Number);
-    Fraction(std::string FractionString);
+    Fraction(std::string &FractionString);
     // Destructur
-    ~Fraction(void);
+    ~Fraction() = default;
 
     // Getter and Setter
-    long getNumerator(void);
-    long getDenominator(void);
-    void setNumerator(long Numerator);
-    void setDenominator(long Denominator);
+    int getNumerator();
+    int getDenominator();
+    void setNumerator(int Numerator);
+    void setDenominator(int Denominator);
 
     // Fraction functions
-    bool reduce(void);
+    bool reduce();
     void convertDoubleToFraction(double Number);
-    double convertFractionToDouble(void);
-    bool convertStringToFraction(std::string FractionString);
+    double convertFractionToDouble();
+    bool convertStringToFraction(std::string &FractionString);
 
     // Operator overloading functions
     bool operator<(Fraction fraction);
@@ -61,11 +62,13 @@ public:
     bool operator>=(Fraction fraction);
     bool operator==(Fraction fraction);
     bool operator!=(Fraction fraction);
-    long operator%(Fraction fraction);
-    operator double();
-    operator float();
-    operator long();
-    operator std::string();
+    int operator%(Fraction fraction);
+
+    explicit operator double();
+    explicit operator float();
+    explicit operator int();
+    explicit operator std::string();
+
     Fraction operator+(Fraction fraction);
     Fraction operator+=(Fraction fraction);
     Fraction operator-=(Fraction fraction);
@@ -74,9 +77,10 @@ public:
     Fraction operator*=(Fraction fraction);
     Fraction operator/(Fraction fraction);
     Fraction operator/=(Fraction fraction);
-    Fraction operator~(void);
-    Fraction operator++(void);
-    Fraction operator--(void);
+
+    Fraction operator~();
+    Fraction operator++();
+    Fraction operator--();
 };
 
 /**
@@ -86,12 +90,18 @@ public:
  * Thrown exception can be handled like standard exceptions
 */
 class FractionInputFailException: public std::exception {
-public: virtual const char* what() const throw() { return "Incorrect Input"; }
+public:
+    [[nodiscard]] const char* what() const noexcept override { return "Incorrect Input"; }
 };
 
 /** Left Shift Operator overloading functions (need to be declared global) */
-std::ostream& operator<<(std::ostream &out, Fraction &Fraction);
+std::ostream& operator<<(std::ostream &out, const Fraction &Fraction);
 /** Right Shift Operator overloading functions (need to be declared global) */
-std::istream& operator>>(std::istream &in, Fraction &Fraction);
+std::istream& operator>>(std::istream &in, const Fraction &Fraction);
+
+Fraction operator+(int Number, Fraction fraction);
+Fraction operator-(int Number, Fraction fraction);
+Fraction operator*(int Number, Fraction fraction);
+Fraction operator/(int Number, Fraction fraction);
 
 #endif
