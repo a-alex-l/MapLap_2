@@ -4,17 +4,18 @@
 #include "opencv2/opencv.hpp"
 #include "LineDetector.hpp"
 #include "CircleDetector.hpp"
+#include "detector/BoolImage.hpp"
 
 class Detector {
 private:
 
-    const cv::Mat &input_contour;
+    const BoolImage &input_contour;
     LineDetector line_detector;
     CircleDetector circle_detector;
 
 public:
 
-    explicit Detector(const cv::Mat &input_contours);
+    explicit Detector(const BoolImage &input_contours);
 
     void detect();
 

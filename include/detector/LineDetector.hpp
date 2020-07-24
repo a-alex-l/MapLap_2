@@ -6,13 +6,14 @@
 #include <vector>
 
 #include "opencv2/opencv.hpp"
-#include "Line.hpp"
+#include "detector/Line.hpp"
+#include "detector/BoolImage.hpp"
 
 class LineDetector {
 private:
 
-    int circle_radius;
-    const cv::Mat &input_contour;
+    int side;
+    const BoolImage &input_contour;
     std::vector<std::pair<int, int>> black_points;
     std::map<double, std::map<double, int>> lines_parameters;
     std::vector<Line> lines;
@@ -26,7 +27,7 @@ private:
 
 public:
 
-    explicit LineDetector(const cv::Mat &input_contours);
+    explicit LineDetector(const BoolImage &input_contours);
 
     void detect();
 

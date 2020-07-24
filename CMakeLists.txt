@@ -20,6 +20,7 @@ add_executable(MapLap2_0
         include/detector/Circle.hpp
         include/detector/Detector.hpp
         include/detector/Settings.hpp
+        include/detector/BoolImage.hpp
         include/detector/PointVector.hpp
         include/detector/LineDetector.hpp
         include/detector/Preprocessing.hpp
@@ -29,6 +30,7 @@ add_executable(MapLap2_0
         src/detector/Circle.cpp
         src/detector/Detector.cpp
         src/detector/Settings.cpp
+        src/detector/BoolImage.cpp
         src/detector/PointVector.cpp
         src/detector/LineDetector.cpp
         src/detector/Preprocessing.cpp
@@ -45,6 +47,7 @@ add_executable(MapLap2_0_Test
         include/detector/Circle.hpp
         include/detector/Detector.hpp
         include/detector/Settings.hpp
+        include/detector/BoolImage.hpp
         include/detector/PointVector.hpp
         include/detector/LineDetector.hpp
         include/detector/Preprocessing.hpp
@@ -54,6 +57,7 @@ add_executable(MapLap2_0_Test
         src/detector/Circle.cpp
         src/detector/Detector.cpp
         src/detector/Settings.cpp
+        src/detector/BoolImage.cpp
         src/detector/PointVector.cpp
         src/detector/LineDetector.cpp
         src/detector/Preprocessing.cpp

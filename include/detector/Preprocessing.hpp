@@ -1,17 +1,14 @@
 #ifndef MAPLAP2_0_PREPROCESSING_HPP
 #define MAPLAP2_0_PREPROCESSING_HPP
 
-#include "opencv2/opencv.hpp"
-#include "opencv2/opencv_modules.hpp"
-#include "Settings.hpp"
+#include "detector/BoolImage.hpp"
+#include "detector/Settings.hpp"
 
 namespace Preprocessing {
 
     cv::Mat make_black_white_image(const cv::Mat &input);
 
-    cv::Mat find_contour_lines(const cv::Mat &gray_image);
-
-    cv::Mat blur_contour_lines(const cv::Mat &gray_image);
+    BoolImage find_contour_lines(const BoolImage &input);
 
 }
 

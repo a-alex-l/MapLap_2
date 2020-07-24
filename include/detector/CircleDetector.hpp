@@ -3,16 +3,26 @@
 
 #include "opencv2/opencv.hpp"
 #include "detector/Circle.hpp"
+#include "detector/BoolImage.hpp"
 
 class CircleDetector {
 private:
 
-    const cv::Mat &input_contour;
+    const BoolImage &input_contour;
     std::vector<std::pair<int, int>> black_points;
+    std::map<double, std::map<double, std::map<double, int>>> circles_parameters; //yxr
+    std::vector<Circle> circles;
+
+    void find_black_points();
+    void find_circles_parameters();
+    void claster_cirles_parameters();
+    void find_circles();
+
+    void show();
 
 public:
 
-    explicit CircleDetector(const cv::Mat &input_contours);
+    explicit CircleDetector(const BoolImage &input_contours);
 
     void detect();
 
