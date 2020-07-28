@@ -1,6 +1,27 @@
 #include "detector/CircleDetector.hpp"
 
-
+std::vector<Fraction> CircleDetector::get_params(int x1, int y1, int x2, int y2, int x3, int y3) {
+    Fraction good = 0;
+    Fraction divider = 2 * (y2  - y1) * (x3 - x2) - 2 * (x2 - x1) * (y3  - y2);
+    if (divider != 0) {
+        Fraction e = y2 * y2 - y1 * y1 + x2 * x2 - x1 * x1;
+        Fraction f = y3 * y3 - y1 * y1 + x3 * x3 - x1 * x1;
+        PointVector center(((x3 - x1) * e - (x2 - x1) * f) / divider,
+                           ((y2 - y1) * f - (y3 - y1) * e) / divider);
+        center.x.reduce(), center.y.reduce();
+        center.x.make_base(4), center.y.make_base(4);
+        Fraction radius2 = (center.x - x1).reduce() * (center.x - x1).reduce() +
+                           (center.y - y1).reduce() * (center.y - y1).reduce();
+        radius2.reduce(), radius2.make_base(10);
+        Fraction radius = sqrt(radius2);
+        if (0 <= center.x && center.x <= input_contour.cols() && 0 <= center.y &&
+                             center.y <= input_contour.rows() && 3 < radius)
+            for (auto t : Settings::check_circles)
+                good += input_contour(center + PointVector(radius, 0).rotate(t));
+        return {good, center.y, center.x, radius};
+    }
+    return {0};
+}
 
 void CircleDetector::find_black_points() {
     for (int i = 0; i < input_contour.rows(); i++)
@@ -10,40 +31,18 @@ void CircleDetector::find_black_points() {
 }
 
 void CircleDetector::find_circles_parameters() {
-    std::vector<Fraction> check = {Fraction(1)/10, Fraction(3)/10,
-            Fraction(5)/10, Fraction(7)/10, Fraction(9)/10};
-    for (int step = 0; step < black_points.size() * 100; step++) {
-        int i = rand() % black_points.size(),
-            j = rand() % black_points.size(),
-            k = rand() % black_points.size();
-        Fraction divider = 2 * (black_points[j].first  - black_points[i].first) *
-                          (black_points[k].second - black_points[j].second) -
-                           2 * (black_points[j].second - black_points[i].second) *
-                          (black_points[k].first  - black_points[j].first);
-        if (divider > 10) {
-            Fraction e = black_points[j].first * black_points[j].first -
-                       black_points[i].first * black_points[i].first +
-                       black_points[j].second * black_points[j].second -
-                       black_points[i].second * black_points[i].second;
-            Fraction f = black_points[k].first * black_points[k].first -
-                       black_points[i].first * black_points[i].first +
-                       black_points[k].second * black_points[k].second -
-                       black_points[i].second * black_points[i].second;
-            Fraction center_x = ((black_points[k].second - black_points[i].second) * e -
-                               (black_points[j].second - black_points[i].second) * f) / divider,
-                   center_y = ((black_points[j].first - black_points[i].first) * f -
-                               (black_points[k].first - black_points[i].first) * e) / divider;
-            center_x.reduce(), center_y.reduce();
-            Fraction radius2 =  (center_x - black_points[i].first).reduce() *
-                                (center_x - black_points[i].first).reduce() +
-                                (center_y - black_points[i].second).reduce() *
-                                (center_y - black_points[i].second).reduce();
-            radius2.reduce();
-            if (0 <= center_x && center_x <= input_contour.cols() && 0 <= center_y &&
-                    center_y <= input_contour.rows() && 1 < radius2 &&
-                    radius2 < input_contour.cols() * input_contour.cols() +
-                    input_contour.rows() + input_contour.rows())
-                circles_parameters[center_x][center_y][radius2]++;
+    std::vector<double> check = {M_PI * 1.0 / 6.0, M_PI * 3.0 / 6.0, M_PI * 5.0 / 6.0,
+                                 M_PI * 7.0 / 6.0, M_PI * 9.0 / 6.0, M_PI * 11.0 / 6.0};
+    for (int step = 0; step < black_points.size() * 30; step++) {
+        int     i = rand() % black_points.size(),
+                j = rand() % black_points.size(),
+                k = rand() % black_points.size();
+        std::vector<Fraction> results = get_params(black_points[i].second, black_points[i].first,
+                                                   black_points[j].second, black_points[j].first,
+                                                   black_points[k].second, black_points[k].first);
+        if (results[0] >= 6) {
+            centers_parameters[results[2]][results[1]] += int(results[0]);
+            circles_parameters[results[2]][results[1]].emplace_back(results[3]);
         }
     }
 }
@@ -66,15 +65,13 @@ void CircleDetector::detect() {
 }
 
 void CircleDetector::show() {
-    std::cout << circles_parameters.size() << std::endl;
     cv::Mat img_result(cv::Size(input_contour.cols(), input_contour.rows()),
                        CV_8U, cv::Scalar(255, 255, 255));
     for (auto &i : circles_parameters) {
         for (auto &j : i.second) {
             for (auto &r : j.second) {
-                std::cout << i.first << " " << j.first << " " << r.first << " " << std::endl;
                 cv::circle(img_result, cv::Point(int(i.first), int(j.first)),
-                        int(sqrt(r.first)), cv::Scalar(255 - r.second * 20));
+                           int(r), cv::Scalar(0));
             }
         }
     }

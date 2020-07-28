@@ -16,21 +16,25 @@ static std::vector<Fraction> get_coordinates(int x1, int x2,
     answer.reserve(2);
     if (y2 - y1 != 0) {
         Fraction t = Fraction(y2) / Fraction(y2 - y1);
+        t.reduce();
         if (0 <= x1 * t + (1 - t) * x2 && x1 * t + (1 - t) * x2 < side)
             answer.emplace_back((x1 * t + (1 - t) * x2) / side);
     }
     if (x2 - x1 != 0) {
         Fraction t = Fraction(x2 - side) / Fraction(x2 - x1);
+        t.reduce();
         if (0 <= y1 * t + (1 - t) * y2 && y1 * t + (1 - t) * y2 < side)
             answer.emplace_back((y1 * t + (1 - t) * y2) / side + 1);
     }
     if (y2 - y1 != 0) {
         Fraction t = Fraction(y2 - side) / Fraction(y2 - y1);
+        t.reduce();
         if (0 < x1 * t + (1 - t) * x2 && x1 * t + (1 - t) * x2 <= side)
             answer.emplace_back((-x1 * t + (t - 1) * x2) / side + 3);
     }
     if (x2 - x1 != 0) {
         Fraction t = Fraction(x2) / Fraction(x2 - x1);
+        t.reduce();
         if (0 < y1 * t + (1 - t) * y2 && y1 * t + (1 - t) * y2 <= side)
             answer.emplace_back((-y1 * t + (t - 1) * y2) / side + 4);
     }
@@ -51,24 +55,21 @@ void LineDetector::find_black_points() {
 void LineDetector::find_lines_parameters() {
     std::vector<Fraction> check = {Fraction(1)/10, Fraction(3)/10,
             Fraction(5)/10, Fraction(7)/10, Fraction(9)/10};
-    for (int step = 0; step < black_points.size() * 100; step++) {
+    for (int step = 0; step < black_points.size() * 30; step++) {
         int i = rand() % black_points.size(), j = rand() % black_points.size();
+        while(i == j) j = rand() % black_points.size();
 
         int good = 0;
         for (Fraction t : check)
             good += input_contour(
                     int(t * black_points[i].first + (1 - t) * black_points[j].first),
                     int(t * black_points[i].second + (1 - t) * black_points[j].second));
-        if (good > 5) {
+        if (good > 3) {
             std::vector<Fraction> coords =
                     get_coordinates(black_points[i].second, black_points[j].second,
                                     black_points[i].first, black_points[j].first, side);
             coords[0].reduce(), coords[1].reduce();
-            if (coords[0] > 4) {
-                std::cout << "Oh" << std::endl;
-            }
             lines_parameters[coords[0]][coords[1]] += good;
-
         }
     }
 }
@@ -96,6 +97,7 @@ void LineDetector::find_lines() {
 void LineDetector::detect() {
     find_black_points();
     find_lines_parameters();
+
     show();
 }
 
@@ -107,15 +109,13 @@ void LineDetector::show() {
             CV_8U, cv::Scalar(255, 255, 255));
     for (auto &i : lines_parameters) {
         for (auto &j : i.second) {
-            if (j.second > 50) {
+            if (j.second > 5) {
                 cv::line(img_result, get_point(i.first, side),
                         get_point(j.first, side), cv::Scalar(0));
             }
-            std::cout << i.first << " " << j.first << std::endl;
             img.at<uchar>(int(i.first * 200 + 50), int(j.first * 200 + 50)) =
                     std::max(int(img.at<uchar>(int(i.first * 200 + 50), int(j.first * 200 + 50)))
-                        - j.second * 5, 0);
-            std::cout << "Hey2" << std::endl;
+                        - j.second, 0);
         }
     }
     cv::imshow("img_line_result", img_result);

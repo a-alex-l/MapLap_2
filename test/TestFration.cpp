@@ -1,6 +1,8 @@
 #include "Catch.hpp"
 #include "detector/Fraction.hpp"
 
+TEST_CASE("Fraction Start") { printf("Testing Fraction\n"); }
+
 TEST_CASE("Fraction == 1") {
     Fraction a(3, 4), b(6, 8);
     REQUIRE(a == b);
@@ -114,3 +116,120 @@ TEST_CASE("Fraction / 4") {
     Fraction a(3, 4), b(3, 4);
     REQUIRE(a / b == Fraction(1, 1));
 }
+
+TEST_CASE("Fraction make_base 1") {
+    Fraction a(3, 4), b(1, 100);
+    REQUIRE((a + b).make_base(10) == Fraction(8, 10));
+}
+
+TEST_CASE("Fraction make_base 2") {
+    Fraction a(3, 4), b(1, 100);
+    REQUIRE((a - b).make_base(10) == Fraction(7, 10));
+}
+
+TEST_CASE("Fraction make_base 3") {
+    Fraction a(3, 4);
+    REQUIRE(a.make_base(10) == Fraction(7, 10));
+}
+
+TEST_CASE("Fraction make_base 4") {
+    Fraction a(8, 10);
+    REQUIRE(a.make_base(10) == Fraction(8, 10));
+}
+
+TEST_CASE("Fraction < 1") {
+    Fraction a(8, 10), b(81, 100);
+    REQUIRE(a < b);
+}
+
+TEST_CASE("Fraction < 2") {
+    Fraction a(8, 10), b(7, 8);
+    REQUIRE(a < b);
+}
+
+TEST_CASE("Fraction < 3") {
+    Fraction a(-8, 10), b(0, 8);
+    REQUIRE(a < b);
+}
+
+TEST_CASE("Fraction < 4") {
+    Fraction a(0, 1), b(1, 1000000000000000000);
+    REQUIRE(a < b);
+}
+
+TEST_CASE("Fraction < 5") {
+    Fraction a(0, 1), b(-1, 1000000000000000000);
+    REQUIRE((!(a < b)));
+}
+
+TEST_CASE("Fraction < 6") {
+    Fraction a(-1, 1), b(-1, 1000000000000000000);
+    REQUIRE((!(b < a)));
+}
+
+TEST_CASE("Fraction < 7") {
+    Fraction a(-1, 1), b(-1, 1);
+    REQUIRE((!(b < a)));
+}
+
+TEST_CASE("Fraction <= 1") {
+    Fraction a(8, 10), b(81, 100);
+    REQUIRE(a <= b);
+}
+
+TEST_CASE("Fraction <= 2") {
+    Fraction a(8, 10), b(7, 8);
+    REQUIRE(a <= b);
+}
+
+TEST_CASE("Fraction <= 3") {
+    Fraction a(-8, 10), b(0, 8);
+    REQUIRE(a <= b);
+}
+
+TEST_CASE("Fraction <= 4") {
+    Fraction a(0, 1), b(1, 1000000000000000000);
+    REQUIRE(a <= b);
+}
+
+TEST_CASE("Fraction <= 5") {
+    Fraction a(0, 1), b(-1, 1000000000000000000);
+    REQUIRE((!(a <= b)));
+}
+
+TEST_CASE("Fraction <= 6") {
+    Fraction a(-1, 1), b(-1, 1000000000000000000);
+    REQUIRE((!(b <= a)));
+}
+
+TEST_CASE("Fraction <= 7") {
+    Fraction a(-1, 1), b(-1, 1);
+    REQUIRE(b <= a);
+}
+
+TEST_CASE("Fraction Fraction(double) 1") {
+    Fraction a(0.5);
+    REQUIRE(a == Fraction(1, 2));
+}
+
+TEST_CASE("Fraction Fraction(double) 2") {
+    Fraction a(0.05);
+    REQUIRE(a == Fraction(5, 100));
+}
+
+TEST_CASE("Fraction Fraction(double) 3") {
+    Fraction a(0.333333);
+    REQUIRE(a == Fraction(33333, 100000));
+}
+
+TEST_CASE("Fraction Fraction(double) 4") {
+    Fraction a(0.666666);
+    REQUIRE(a == Fraction(66666, 100000));
+}
+
+TEST_CASE("Fraction Fraction(double) 5") {
+    Fraction a(-1.0);
+    REQUIRE(a == Fraction(-1, 1));
+}
+
+TEST_CASE("Fraction End") { printf("Finished Fraction\n"); }

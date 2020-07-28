@@ -1,9 +1,6 @@
 #include "detector/PointVector.hpp"
 
-PointVector::PointVector(Fraction x, Fraction y) noexcept : x(x), y(y) {}
-
-Fraction PointVector::get_x() const noexcept { return x; }
-Fraction PointVector::get_y() const noexcept { return y; }
+PointVector::PointVector(Fraction y, Fraction x) noexcept : x(x), y(y) {}
 
 PointVector& PointVector::operator+=(const PointVector &other) {
     this->x += other.x;
@@ -42,7 +39,7 @@ PointVector PointVector::operator/(Fraction other) const noexcept {
 }
 
 std::ostream& operator<<(std::ostream &out, const PointVector &v) { // for debug
-    return out << "(" << v.x << ", " << v.y << ")";
+    return out << "(" << v.y << ", " << v.x << ")";
 }
 
 bool PointVector::operator==(const PointVector &other) const noexcept {
@@ -51,4 +48,13 @@ bool PointVector::operator==(const PointVector &other) const noexcept {
 
 bool PointVector::operator!=(const PointVector &other) const noexcept {
     return x != other.x || y != other.y;
+}
+
+PointVector PointVector::rotate(double radian) {
+    return *this = PointVector(-Fraction(sin(radian)) * this->x + Fraction(cos(radian)) * this->y,
+                               Fraction(cos(radian)) * this->x + Fraction(sin(radian)) * this->y);
+}
+
+Fraction PointVector::length() {
+    return sqrt(x * x + y * y);
 }

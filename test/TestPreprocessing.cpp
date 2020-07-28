@@ -1,6 +1,8 @@
 #include "Catch.hpp"
 #include "detector/Preprocessing.hpp"
 
+TEST_CASE("Preprocessing Start") { printf("Testing Preprocessing\n"); }
+
 bool equal(const cv::Mat &a, const cv::Mat &b) {
     if (!(a.rows == b.rows && a.cols == b.cols))
         return false;
@@ -68,3 +70,6 @@ TEST_CASE("Preprocessing find_contour_lines 4.") {
     BoolImage img_right(input_img_right);
     REQUIRE(img_contour == img_right);
 }
+
+
+TEST_CASE("Preprocessing End") { printf("Finished Preprocessing\n"); }

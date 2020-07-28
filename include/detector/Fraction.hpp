@@ -7,7 +7,7 @@ class Fraction {
 private:
 
     long long numerator = 0;
-    unsigned long long denominator = 1;
+    long long denominator = 1;
 
     long long euclidean(long long a, long long b);
 
@@ -15,15 +15,17 @@ public:
 
     Fraction() = default;
     Fraction(int number);
+    Fraction(double number);
     Fraction(long long number);
-    Fraction(long long numerator, unsigned long long denominator);
+    Fraction(long long numerator, long long denominator);
     Fraction(std::string &fraction_string);
     ~Fraction() = default;
 
     [[nodiscard]] long long get_numerator() const;
-    [[nodiscard]] unsigned long long get_denominator() const;
+    [[nodiscard]] long long get_denominator() const;
 
     Fraction reduce();
+    Fraction make_base(Fraction base);
 
     void convert_string_to_fraction(std::string &FractionString);
 
@@ -49,6 +51,7 @@ public:
     Fraction operator/(Fraction fraction) const;
     Fraction operator/=(Fraction fraction);
 
+    Fraction operator-();
     Fraction operator++();
     Fraction operator--();
 };

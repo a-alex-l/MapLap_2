@@ -2,9 +2,16 @@
 #define MAPLAP2_0_BOOLIMAGE_HPP
 
 #include "opencv2/opencv.hpp"
+#include "detector/PointVector.hpp"
 #include <vector>
 
-struct BoolImage {  // false == white, true = black !
+class BoolImage {  // false == white, true = black !
+private:
+
+    std::vector<bool, std::allocator<bool>>::reference get_link(int y, int x);
+    bool get_copy(int y, int x) const;
+
+public:
 
     std::vector<std::vector<bool>> data;
 
@@ -21,6 +28,8 @@ struct BoolImage {  // false == white, true = black !
 
     std::vector<bool, std::allocator<bool>>::reference operator()(int y, int x);
     bool operator()(int y, int x) const;
+    std::vector<bool, std::allocator<bool>>::reference operator()(const PointVector &point);
+    bool operator()(const PointVector &point) const;
 
     explicit operator cv::Mat();
 

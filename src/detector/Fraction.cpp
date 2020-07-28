@@ -8,8 +8,23 @@
 Fraction::Fraction(int number) : numerator(number), denominator(1) {}
 Fraction::Fraction(long long number) : numerator(number), denominator(1) {}
 
-Fraction::Fraction(long long numerator, unsigned long long denominator) :
+Fraction::Fraction(long long numerator, long long denominator) :
     numerator(numerator), denominator(denominator) {}
+
+Fraction::Fraction(double number) {
+    static const int accuracy = 6;
+    static Fraction basis[accuracy] =
+            {Fraction(1), Fraction(1, 10),
+             Fraction(1, 100), Fraction(1, 1000),
+             Fraction(1, 10000), Fraction(1, 100000)}; // It`s more than enough for my purposes.
+    *this = 0;
+    for (auto bas : basis)
+        if (int(number / double(bas)) != 0) {
+            *this  += bas * int(number / double(bas));
+            number -= int(number / double(bas)) * double(bas);
+        }
+    this->reduce();
+}
 
 Fraction::Fraction(std::string &fraction_string) {
     convert_string_to_fraction(fraction_string);
@@ -23,7 +38,7 @@ long long Fraction::get_numerator() const {
     return numerator;
 }
 
-unsigned long long Fraction::get_denominator() const {
+long long Fraction::get_denominator() const {
     return denominator;
 }
 
@@ -36,6 +51,10 @@ Fraction Fraction::reduce() {
     return *this;
 }
 
+Fraction Fraction::make_base(Fraction base) {
+    return *this = Fraction(int(*this * base)) / base;
+}
+
 void Fraction::convert_string_to_fraction(std::string &fraction_string) {
     std::size_t pos = fraction_string.find('/');
     if (pos != std::string::npos) {
@@ -45,7 +64,7 @@ void Fraction::convert_string_to_fraction(std::string &fraction_string) {
 }
 
 bool Fraction::operator<(Fraction fraction) const {
-    return (numerator * fraction.get_denominator()) < (fraction.get_numerator() * denominator);
+    return numerator * fraction.get_denominator() < fraction.get_numerator() * denominator;
 }
 
 bool Fraction::operator<=(Fraction fraction) const {
@@ -92,11 +111,11 @@ Fraction::operator std::string() const {
 
 Fraction Fraction::operator+(Fraction fraction) const {
     if (this->denominator == fraction.denominator)
-        return Fraction(this->numerator + fraction.numerator, this->denominator);
+        return Fraction(this->numerator + fraction.numerator, this->denominator).reduce();
     else
         return Fraction(this->numerator * fraction.denominator +
         fraction.numerator * this->denominator,
-        this->denominator * fraction.get_denominator());
+        this->denominator * fraction.get_denominator()).reduce();
 }
 
 Fraction Fraction::operator-(Fraction fraction) const {
@@ -113,7 +132,7 @@ Fraction Fraction::operator-=(Fraction fraction) {
 
 Fraction Fraction::operator*(Fraction fraction) const {
     return Fraction(numerator * fraction.get_numerator(),
-                    denominator * fraction.get_denominator());
+                    denominator * fraction.get_denominator()).reduce();
 }
 
 Fraction Fraction::operator*=(Fraction fraction) {
@@ -121,15 +140,12 @@ Fraction Fraction::operator*=(Fraction fraction) {
 }
 
 Fraction Fraction::operator/(Fraction fraction) const {
-    return Fraction(numerator * fraction.get_denominator(), denominator * fraction.get_numerator());
+    return Fraction(numerator * fraction.get_denominator(),
+                    denominator * fraction.get_numerator()).reduce();
 }
 
 Fraction Fraction::operator/=(Fraction fraction) {
-    denominator *= fraction.get_numerator();
-    numerator *= fraction.get_denominator();
-    if (fraction.numerator < 0)
-        numerator *= -1;
-    return *this;
+    return *this = *this / fraction;
 }
 
 Fraction operator+(long long Number, Fraction fraction) {
@@ -148,15 +164,18 @@ Fraction operator/(long long Number, Fraction fraction) {
     return Fraction(Number) / fraction;
 }
 
-Fraction Fraction::operator++() {
-    numerator += 1;
+Fraction Fraction::operator-() {
+    numerator *= -1;
+    return *this;
+}
 
+Fraction Fraction::operator++() {
+    numerator += denominator;
     return *this;
 }
 
 Fraction Fraction::operator--() {
-    numerator -= 1;
-
+    numerator -= denominator;
     return *this;
 }
 
@@ -188,7 +207,7 @@ bool operator>=(long long Number, Fraction fraction) {
 }
 
 Fraction abs(Fraction fraction) {
-    return Fraction(abs(fraction.get_numerator()), fraction.get_denominator());
+    return Fraction(abs(fraction.get_numerator()), abs(fraction.get_denominator()));
 }
 
 double sqrt(Fraction fraction) {

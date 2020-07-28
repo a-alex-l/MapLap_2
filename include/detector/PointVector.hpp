@@ -4,14 +4,11 @@
 #include <iostream>
 #include "detector/Fraction.hpp"
 
-class PointVector {
-private:
+struct PointVector {
 
     Fraction x = 0, y = 0;
 
-public:
-
-    PointVector(Fraction x, Fraction y) noexcept;
+    PointVector(Fraction y, Fraction x) noexcept;
 
     PointVector operator*(Fraction other) const noexcept;
     PointVector operator/(Fraction other) const noexcept;
@@ -26,8 +23,8 @@ public:
     bool operator==(const PointVector &other) const noexcept;
     bool operator!=(const PointVector &other) const noexcept;
 
-    [[nodiscard]] Fraction get_x() const noexcept;
-    [[nodiscard]] Fraction get_y() const noexcept;
+    PointVector rotate(double radian);
+    Fraction length();
 
     friend std::ostream& operator<<(std::ostream &out, const PointVector &v); // for debug
 };

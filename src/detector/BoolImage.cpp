@@ -20,14 +20,34 @@ int BoolImage::cols() const {
     return data[0].size();
 }
 
+std::vector<bool, std::allocator<bool>>::reference BoolImage::get_link(int y, int x) {
+    if (0 <= x && x < this->cols() && 0 <= y && y < this->rows()) return data[y][x];
+    else return data[(y % this->rows() + this->rows()) % this->rows()]
+                    [(x % this->cols() + this->cols()) % this->cols()];
+}
+
+bool BoolImage::get_copy(int y, int x) const {
+    if (0 <= x && x < this->cols() && 0 <= y && y < this->rows()) return data[y][x];
+    else return data[(y % this->rows() + this->rows()) % this->rows()]
+                    [(x % this->cols() + this->cols()) % this->cols()];
+}
+
+
 std::vector<bool, std::allocator<bool>>::reference BoolImage::operator()(int y, int x) {
-    return data[y][x];
+    return this->get_link(y, x);
 }
 
 bool BoolImage::operator()(int y, int x) const {
-    return data[y][x];
+    return this->get_copy(y, x);
 }
 
+std::vector<bool, std::allocator<bool>>::reference BoolImage::operator()(const PointVector &point) {
+    return this->get_link(int(point.y), int(point.x));
+}
+
+bool BoolImage::operator()(const PointVector &point) const {
+    return this->get_copy(int(point.y), int(point.x));
+}
 
 BoolImage::operator cv::Mat() {
     cv::Mat answer(this->rows(), this->cols(), CV_8U, cv::Scalar(255));

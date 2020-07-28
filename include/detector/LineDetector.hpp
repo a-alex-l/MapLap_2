@@ -1,7 +1,6 @@
 #ifndef MAPLAP2_0_LINEDETECTOR_HPP
 #define MAPLAP2_0_LINEDETECTOR_HPP
 
-
 #include <map>
 #include <vector>
 
@@ -9,6 +8,7 @@
 #include "detector/Line.hpp"
 #include "detector/Fraction.hpp"
 #include "detector/BoolImage.hpp"
+#include "detector/Settings.hpp"
 
 class LineDetector {
 private:
