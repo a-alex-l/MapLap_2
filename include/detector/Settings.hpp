@@ -9,6 +9,8 @@ namespace Settings {
 
     extern double circle_filling;
     extern double line_filling;
+    extern int count_of_attempts_find_line;
+    extern int count_of_attempts_find_circle;
     extern int block_size;
     extern int black_level;
     extern std::vector<double> check_circles;

@@ -1,7 +1,9 @@
 #include "detector/Settings.hpp"
 
-double Settings::circle_filling = 0.95;
-double Settings::line_filling = 0.95;
+double Settings::circle_filling = 0.9;
+double Settings::line_filling = 0.9;
+int Settings::count_of_attempts_find_line = 1000;
+int Settings::count_of_attempts_find_circle = 1000;
 int Settings::block_size = 101;
 int Settings::black_level = 20;
 std::vector<double> Settings::check_circles = {M_PI * 0.05, M_PI * 0.15, M_PI * 0.25, M_PI * 0.35,

@@ -1,26 +1,35 @@
 #include "detector/CircleDetector.hpp"
 
-std::vector<Fraction> CircleDetector::get_params(int x1, int y1, int x2, int y2, int x3, int y3) {
-    Fraction good = 0;
-    Fraction divider = 2 * (y2  - y1) * (x3 - x2) - 2 * (x2 - x1) * (y3  - y2);
-    if (divider != 0) {
-        Fraction e = y2 * y2 - y1 * y1 + x2 * x2 - x1 * x1;
-        Fraction f = y3 * y3 - y1 * y1 + x3 * x3 - x1 * x1;
-        PointVector center(((x3 - x1) * e - (x2 - x1) * f) / divider,
-                           ((y2 - y1) * f - (y3 - y1) * e) / divider);
-        center.x.reduce(), center.y.reduce();
-        center.x.make_base(4), center.y.make_base(4);
-        Fraction radius2 = (center.x - x1).reduce() * (center.x - x1).reduce() +
-                           (center.y - y1).reduce() * (center.y - y1).reduce();
-        radius2.reduce(), radius2.make_base(10);
-        Fraction radius = sqrt(radius2);
-        if (0 <= center.x && center.x <= input_contour.cols() && 0 <= center.y &&
-                             center.y <= input_contour.rows() && 3 < radius)
-            for (auto t : Settings::check_circles)
-                good += input_contour(center + PointVector(radius, 0).rotate(t));
-        return {good, center.y, center.x, radius};
-    }
-    return {0};
+Line CircleDetector::get_tangent_in_point(int x, int y) const {
+    std::vector<PointVector> move =
+            {{1, 0}, {1, 1}, {0, 1}, {-1, 1},
+             {-1, 0}, {-1, -1}, {0, -1}, {1, -1}};
+    PointVector now = {x, y};
+    for (int i = 0; i < 2; i++)
+        for (const auto & j : move)
+            if (input_contour(now + j)) {
+                now += j;
+                break;
+            }
+    return Line(now, {x, y});
+}
+
+std::pair<Circle, double> CircleDetector::find_circle_percent(int x, int y) const {
+    Line tangent = get_tangent_in_point(x, y);
+    std::vector<PointVector>
+    rotate60 = tangent.rotate_around_first(M_PI / 3.0).get_intersection(input_contour),
+    rotate120 = tangent.rotate_around_first(2 * M_PI / 3.0).get_intersection(input_contour);
+    double best_circle_score = 0;
+    Circle ans;
+    for (PointVector &i : rotate60)
+        for (PointVector &j : rotate120)
+            if (Circle({x, y}, i, j).get_radius() != -1 &&
+                    Circle({x, y}, i, j).get_percent_intersection(input_contour)
+                    > best_circle_score) {
+                ans = Circle({x, y}, i, j);
+                best_circle_score = ans.get_percent_intersection(input_contour);
+            }
+    return { ans, best_circle_score };
 }
 
 void CircleDetector::find_black_points() {
@@ -31,18 +40,15 @@ void CircleDetector::find_black_points() {
 }
 
 void CircleDetector::find_circles_parameters() {
-    std::vector<double> check = {M_PI * 1.0 / 6.0, M_PI * 3.0 / 6.0, M_PI * 5.0 / 6.0,
-                                 M_PI * 7.0 / 6.0, M_PI * 9.0 / 6.0, M_PI * 11.0 / 6.0};
-    for (int step = 0; step < black_points.size() * 30; step++) {
-        int     i = rand() % black_points.size(),
-                j = rand() % black_points.size(),
-                k = rand() % black_points.size();
-        std::vector<Fraction> results = get_params(black_points[i].second, black_points[i].first,
-                                                   black_points[j].second, black_points[j].first,
-                                                   black_points[k].second, black_points[k].first);
-        if (results[0] >= 6) {
-            centers_parameters[results[2]][results[1]] += int(results[0]);
-            circles_parameters[results[2]][results[1]].emplace_back(results[3]);
+    for (int step = 0; step < Settings::count_of_attempts_find_circle; step++) {
+        int i = rand() % black_points.size();
+        std::pair<Circle, double> result =
+                find_circle_percent(black_points[i].second, black_points[i].first);
+
+        if (result.second > Settings::circle_filling) {
+            centers_parameters[result.first.get_x()][result.first.get_y()] += result.second;
+            circles_parameters[result.first.get_x()]
+                              [result.first.get_y()].emplace_back(result.first.get_radius());
         }
     }
 }

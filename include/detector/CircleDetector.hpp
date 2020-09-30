@@ -6,17 +6,19 @@
 #include "detector/Fraction.hpp"
 #include "detector/BoolImage.hpp"
 #include "detector/Settings.hpp"
+#include "detector/Line.hpp"
 
 class CircleDetector {
 private:
 
     const BoolImage &input_contour;
     std::vector<std::pair<int, int>> black_points;
-    std::map<Fraction, std::map<Fraction, int>> centers_parameters; //yx
+    std::map<Fraction, std::map<Fraction, double>> centers_parameters; //yx
     std::map<Fraction, std::map<Fraction, std::vector<int>>> circles_parameters; //yxr
     std::vector<Circle> circles;
 
-    std::vector<Fraction> get_params(int x1, int y1, int x2, int y2, int x3, int y3);
+    [[nodiscard]] Line get_tangent_in_point(int x, int y) const;
+    [[nodiscard]] std::pair<Circle, double> find_circle_percent(int x, int y) const;
 
     void find_black_points();
     void find_circles_parameters();

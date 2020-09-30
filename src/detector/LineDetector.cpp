@@ -53,18 +53,16 @@ void LineDetector::find_black_points() {
 }
 
 void LineDetector::find_lines_parameters() {
-    std::vector<Fraction> check = {Fraction(1)/10, Fraction(3)/10,
-            Fraction(5)/10, Fraction(7)/10, Fraction(9)/10};
-    for (int step = 0; step < black_points.size() * 30; step++) {
+    for (int step = 0; step < Settings::count_of_attempts_find_line; step++) {
         int i = rand() % black_points.size(), j = rand() % black_points.size();
         while(i == j) j = rand() % black_points.size();
 
         int good = 0;
-        for (Fraction t : check)
+        for (Fraction t : Settings::check_lines)
             good += input_contour(
                     int(t * black_points[i].first + (1 - t) * black_points[j].first),
                     int(t * black_points[i].second + (1 - t) * black_points[j].second));
-        if (good > 3) {
+        if (good >= Settings::check_lines.size() * Settings::line_filling) {
             std::vector<Fraction> coords =
                     get_coordinates(black_points[i].second, black_points[j].second,
                                     black_points[i].first, black_points[j].first, side);
@@ -109,10 +107,8 @@ void LineDetector::show() {
             CV_8U, cv::Scalar(255, 255, 255));
     for (auto &i : lines_parameters) {
         for (auto &j : i.second) {
-            if (j.second > 5) {
-                cv::line(img_result, get_point(i.first, side),
+            cv::line(img_result, get_point(i.first, side),
                         get_point(j.first, side), cv::Scalar(0));
-            }
             img.at<uchar>(int(i.first * 200 + 50), int(j.first * 200 + 50)) =
                     std::max(int(img.at<uchar>(int(i.first * 200 + 50), int(j.first * 200 + 50)))
                         - j.second, 0);
