@@ -4,11 +4,10 @@
 #include <map>
 #include <vector>
 
-#include "opencv2/opencv.hpp"
 #include "detector/Line.hpp"
-#include "detector/Fraction.hpp"
 #include "detector/BoolImage.hpp"
 #include "detector/Settings.hpp"
+#include "detector/TangentsDetector.hpp"
 
 class LineDetector {
 private:
@@ -16,8 +15,9 @@ private:
     int side;
     const BoolImage &input_contour;
     std::vector<std::pair<int, int>> black_points;
-    std::map<Fraction, std::map<Fraction, int>> lines_parameters;
+    std::map<double, std::map<double, int>> lines_parameters;
     std::vector<Line> lines;
+    TangentsDetector tangent_detector;
 
     void find_black_points();
     void find_lines_parameters();

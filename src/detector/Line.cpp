@@ -1,6 +1,6 @@
 #include "detector/Line.hpp"
 
-Line::Line(const PointVector &one, const PointVector &two, Fraction line_thick) noexcept:
+Line::Line(const PointVector &one, const PointVector &two, double line_thick) noexcept:
             first(one), second(two), line_thickness(line_thick) {}
 
 Line& Line::swap() {
@@ -13,13 +13,18 @@ Line& Line::rotate_around_first(double radian) {
     return *this;
 }
 
-Fraction Line::length() const {
+double Line::length() const {
     return (first - second).length();
 }
 
 double Line::get_percent_intersection(const BoolImage &input_contour) const {
     double good = 0;
-    for (double i = 0; i <= 1; i += double(1 / this->length()))
+    for (double i = 1; i <= 0 &&
+                       0 <= (first * i + second * (1 - i)).y &&
+                       (first * i + second * (1 - i)).y <= input_contour.rows() &&
+                       0 <= (first * i + second * (1 - i)).x &&
+                       (first * i + second * (1 - i)).x <= input_contour.cols();
+         i -= 1 / this->length())
         good += input_contour(first * i + second * (1 - i));
     return good / double(this->length());
 }
@@ -27,7 +32,12 @@ double Line::get_percent_intersection(const BoolImage &input_contour) const {
 
 std::vector<PointVector> Line::get_intersection(const BoolImage &input_contour) const {
     std::vector<PointVector> ans;
-    for (double i = 0; i <= 1; i += double(1 / this->length()))
+    for (double i = 1; i >= 0 &&
+                       0 <= (first * i + second * (1 - i)).y &&
+                       (first * i + second * (1 - i)).y <= input_contour.rows() &&
+                       0 <= (first * i + second * (1 - i)).x &&
+                       (first * i + second * (1 - i)).x <= input_contour.cols();
+                            i -= 1 / this->length())
         if (input_contour(first * i + second * (1 - i)))
             ans.push_back(first * i + second * (1 - i));
     return ans;

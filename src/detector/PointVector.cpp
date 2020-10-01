@@ -1,6 +1,7 @@
 #include "detector/PointVector.hpp"
+#include <cmath>
 
-PointVector::PointVector(Fraction y, Fraction x) noexcept : x(x), y(y) {}
+PointVector::PointVector(double y, double x) noexcept : x(x), y(y) {}
 
 PointVector& PointVector::operator+=(const PointVector &other) {
     this->x += other.x;
@@ -8,7 +9,7 @@ PointVector& PointVector::operator+=(const PointVector &other) {
     return *this;
 }
 
-PointVector& PointVector::operator*=(Fraction other) {
+PointVector& PointVector::operator*=(double other) {
     this->x *= other;
     this->y *= other;
     return *this;
@@ -18,7 +19,7 @@ PointVector& PointVector::operator-=(const PointVector &other) {
     return *this += other * -1;
 }
 
-PointVector& PointVector::operator/=(Fraction other) {
+PointVector& PointVector::operator/=(double other) {
     return *this *= 1 / other;
 }
 
@@ -30,11 +31,11 @@ PointVector PointVector::operator-(PointVector other) const noexcept {
     return *this + other * -1;
 }
 
-PointVector PointVector::operator*(Fraction other) const noexcept {
+PointVector PointVector::operator*(double other) const noexcept {
     return PointVector(*this) *= other;
 }
 
-PointVector PointVector::operator/(Fraction other) const noexcept {
+PointVector PointVector::operator/(double other) const noexcept {
     return PointVector(*this) /= other;
 }
 
@@ -51,10 +52,10 @@ bool PointVector::operator!=(const PointVector &other) const noexcept {
 }
 
 PointVector PointVector::rotate(double radian) {
-    return *this = PointVector(-Fraction(sin(radian)) * this->x + Fraction(cos(radian)) * this->y,
-                               Fraction(cos(radian)) * this->x + Fraction(sin(radian)) * this->y);
+    return *this = PointVector(-sin(radian) * this->x + cos(radian) * this->y,
+                               cos(radian) * this->x + sin(radian) * this->y);
 }
 
-Fraction PointVector::length() {
+double PointVector::length() {
     return sqrt(x * x + y * y);
 }

@@ -18,7 +18,6 @@ add_executable(MapLap2_0
 
         include/detector/Line.hpp
         include/detector/Circle.hpp
-        include/detector/Fraction.hpp
         include/detector/Detector.hpp
         include/detector/Settings.hpp
         include/detector/BoolImage.hpp
@@ -26,17 +25,18 @@ add_executable(MapLap2_0
         include/detector/LineDetector.hpp
         include/detector/Preprocessing.hpp
         include/detector/CircleDetector.hpp
+        include/detector/TangentsDetector.hpp
 
         src/detector/Line.cpp
         src/detector/Circle.cpp
-        src/detector/Fraction.cpp
         src/detector/Detector.cpp
         src/detector/Settings.cpp
         src/detector/BoolImage.cpp
         src/detector/PointVector.cpp
         src/detector/LineDetector.cpp
         src/detector/Preprocessing.cpp
-        src/detector/CircleDetector.cpp)
+        src/detector/CircleDetector.cpp
+        src/detector/TangentsDetector.cpp)
 
 add_executable(MapLap2_0_Test
         test/Catch.hpp
@@ -48,7 +48,6 @@ add_executable(MapLap2_0_Test
 
         include/detector/Line.hpp
         include/detector/Circle.hpp
-        include/detector/Fraction.hpp
         include/detector/Detector.hpp
         include/detector/Settings.hpp
         include/detector/BoolImage.hpp
@@ -56,17 +55,18 @@ add_executable(MapLap2_0_Test
         include/detector/LineDetector.hpp
         include/detector/Preprocessing.hpp
         include/detector/CircleDetector.hpp
+        include/detector/TangentsDetector.hpp
 
         src/detector/Line.cpp
         src/detector/Circle.cpp
-        src/detector/Fraction.cpp
         src/detector/Detector.cpp
         src/detector/Settings.cpp
         src/detector/BoolImage.cpp
         src/detector/PointVector.cpp
         src/detector/LineDetector.cpp
         src/detector/Preprocessing.cpp
-        src/detector/CircleDetector.cpp)
+        src/detector/CircleDetector.cpp
+        src/detector/TangentsDetector.cpp)
 
 target_link_libraries(MapLap2_0 ${OpenCV_LIBS})
 target_link_libraries(MapLap2_0_Test ${OpenCV_LIBS})
