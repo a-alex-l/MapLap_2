@@ -17,25 +17,27 @@ add_executable(MapLap2_0
         src/main.cpp
 
         include/detector/Line.hpp
-        include/detector/Circle.hpp
+        include/detector/Timer.hpp
+        include/detector/Ellipse.hpp
         include/detector/Detector.hpp
         include/detector/Settings.hpp
         include/detector/BoolImage.hpp
         include/detector/PointVector.hpp
         include/detector/LineDetector.hpp
         include/detector/Preprocessing.hpp
-        include/detector/CircleDetector.hpp
+        include/detector/EllipseDetector.hpp
         include/detector/TangentsDetector.hpp
 
         src/detector/Line.cpp
-        src/detector/Circle.cpp
+        src/detector/Timer.cpp
+        src/detector/Ellipse.cpp
         src/detector/Detector.cpp
         src/detector/Settings.cpp
         src/detector/BoolImage.cpp
         src/detector/PointVector.cpp
         src/detector/LineDetector.cpp
         src/detector/Preprocessing.cpp
-        src/detector/CircleDetector.cpp
+        src/detector/EllipseDetector.cpp
         src/detector/TangentsDetector.cpp)
 
 add_executable(MapLap2_0_Test
@@ -47,25 +49,27 @@ add_executable(MapLap2_0_Test
         test/TestPreprocessing.cpp
 
         include/detector/Line.hpp
-        include/detector/Circle.hpp
+        include/detector/Timer.hpp
+        include/detector/Ellipse.hpp
         include/detector/Detector.hpp
         include/detector/Settings.hpp
         include/detector/BoolImage.hpp
         include/detector/PointVector.hpp
         include/detector/LineDetector.hpp
         include/detector/Preprocessing.hpp
-        include/detector/CircleDetector.hpp
+        include/detector/EllipseDetector.hpp
         include/detector/TangentsDetector.hpp
 
         src/detector/Line.cpp
-        src/detector/Circle.cpp
+        src/detector/Timer.cpp
+        src/detector/Ellipse.cpp
         src/detector/Detector.cpp
         src/detector/Settings.cpp
         src/detector/BoolImage.cpp
         src/detector/PointVector.cpp
         src/detector/LineDetector.cpp
         src/detector/Preprocessing.cpp
-        src/detector/CircleDetector.cpp
+        src/detector/EllipseDetector.cpp
         src/detector/TangentsDetector.cpp)
 
 target_link_libraries(MapLap2_0 ${OpenCV_LIBS})
