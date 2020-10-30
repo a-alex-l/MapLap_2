@@ -1,40 +1,43 @@
 #include "detector/LineDetector.hpp"
-#include <iostream>
 
-
-static cv::Point get_point(double coord, int side) {
-    if (coord < 1)      return cv::Point(int(coord * side), int(0));
-    else if (coord < 2) return cv::Point(int(side), int((coord - 1) * side));
-    else if (coord < 3) return cv::Point(int((3 - coord) * side), int(side));
-    else                return cv::Point(int(0), int((4 - coord) * side));
+#include "opencv2/opencv.hpp" //debug
+static void show(const BoolImage &input_contour, Line l) { //debug
+    static cv::Mat img_result(cv::Size(input_contour.cols(), input_contour.rows()),
+                              CV_8U, cv::Scalar(255, 255, 255));
+    cv::line(img_result, cv::Point(int(l.get_first().x), int(l.get_first().y)), cv::Point(int(l.get_second().x), int(l.get_second().y)), cv::Scalar(0));
+    cv::imshow("img_Line_result", img_result);
+    //cv::waitKey();
 }
 
-static std::vector<double> get_coordinates(int x1, int x2,
-                                           int y1, int y2,
-                                           int side) { //return <[0,4), [0,4)>
-    std::vector<double> answer;
-    answer.reserve(2);
+static void print(std::vector<Line> &lines) {
+    for (auto line : lines)
+        std::cout << line << "\n";
+    std::cout.flush();
+}
+
+static Line get_line(int x1, int x2, int y1, int y2, int side) {
+    std::vector<PointVector> accumulator;
     if (y2 - y1 != 0) {
         double t = double(y2) / double(y2 - y1);
         if (0 <= x1 * t + (1 - t) * x2 && x1 * t + (1 - t) * x2 < side)
-            answer.emplace_back((x1 * t + (1 - t) * x2) / side);
+            accumulator.emplace_back(0, x1 * t + (1 - t) * x2);
     }
     if (x2 - x1 != 0) {
         double t = double(x2 - side) / double(x2 - x1);
         if (0 <= y1 * t + (1 - t) * y2 && y1 * t + (1 - t) * y2 < side)
-            answer.emplace_back((y1 * t + (1 - t) * y2) / side + 1);
+            accumulator.emplace_back(y1 * t + (1 - t) * y2, side);
     }
     if (y2 - y1 != 0) {
         double t = double(y2 - side) / double(y2 - y1);
         if (0 < x1 * t + (1 - t) * x2 && x1 * t + (1 - t) * x2 <= side)
-            answer.emplace_back((-x1 * t + (t - 1) * x2) / side + 3);
+            accumulator.emplace_back(side, x1 * t + (1 - t) * x2);
     }
     if (x2 - x1 != 0) {
         double t = double(x2) / double(x2 - x1);
         if (0 < y1 * t + (1 - t) * y2 && y1 * t + (1 - t) * y2 <= side)
-            answer.emplace_back((-y1 * t + (t - 1) * y2) / side + 4);
+            accumulator.emplace_back(y1 * t + (1 - t) * y2, 0);
     }
-    return answer;
+    return Line(accumulator[0], accumulator[1]);
 }
 
 LineDetector::LineDetector(const BoolImage &input_contours)
@@ -49,7 +52,7 @@ void LineDetector::find_black_points() {
                 black_points.emplace_back(i, j);
 }
 
-void LineDetector::find_lines_parameters() {
+void LineDetector::find_pre_lines() {
     for (int step = 0; step < Settings::count_of_attempts_find_line; step++) {
         int i = rand() % black_points.size(), j = rand() % black_points.size();
         while(i == j) j = rand() % black_points.size();
@@ -59,11 +62,11 @@ void LineDetector::find_lines_parameters() {
             good += input_contour(
                     int(t * black_points[i].first + (1 - t) * black_points[j].first),
                     int(t * black_points[i].second + (1 - t) * black_points[j].second));
-        if (good >= Settings::check_lines.size() * Settings::line_filling) {
-            std::vector<double> coords =
-                    get_coordinates(black_points[i].second, black_points[j].second,
-                                    black_points[i].first, black_points[j].first, side);
-            lines_parameters[coords[0]][coords[1]] += good;
+        if (good >= Settings::check_lines.size() * Settings::line_filling * 0.5) {
+            show(input_contour, get_line(black_points[i].second, black_points[j].second,
+                                         black_points[i].first, black_points[j].first, side));
+            pre_lines.push_back(get_line(black_points[i].second, black_points[j].second,
+                                         black_points[i].first, black_points[j].first, side));
         }
     }
 }
@@ -78,38 +81,23 @@ static int find(int a, std::vector<int> &dsu) {
     return dsu[a] = find(dsu[a], dsu);
 }
 
-void LineDetector::claster_lines_parameters() {
+void LineDetector::cluster_pre_lines() {
     std::vector<int> dsu(black_points.size(), -1); // start = -1
 
     std::vector<std::pair<int, std::pair<double, double>>> sorted;
 }
 
-void LineDetector::find_lines() {
-
-}
-
 void LineDetector::detect() {
+    line_detector_timer.start();
     find_black_points();
-    find_lines_parameters();
-
-    show();
+    find_pre_lines();
+    //print(pre_lines);
+    cluster_pre_lines();
+    print_timing();
+    //print(lines);
 }
 
-
-void LineDetector::show() {
-    cv::Mat img_result(cv::Size(input_contour.cols(), input_contour.rows()),
-            CV_8U, cv::Scalar(255, 255, 255));
-    cv::Mat img(cv::Size(900, 900),
-            CV_8U, cv::Scalar(255, 255, 255));
-    for (auto &i : lines_parameters) {
-        for (auto &j : i.second) {
-            cv::line(img_result, get_point(i.first, side),
-                        get_point(j.first, side), cv::Scalar(0));
-            img.at<uchar>(int(i.first * 200 + 50), int(j.first * 200 + 50)) =
-                    std::max(int(img.at<uchar>(int(i.first * 200 + 50), int(j.first * 200 + 50)))
-                        - j.second, 0);
-        }
-    }
-    cv::imshow("img_line_result", img_result);
-    cv::imshow("img_line_status", img);
+void LineDetector::print_timing() noexcept {
+    line_detector_timer.stop();
+    line_detector_timer.print();
 }

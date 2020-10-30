@@ -4,10 +4,11 @@
 #include <map>
 #include <vector>
 
-#include "detector/Line.hpp"
-#include "detector/BoolImage.hpp"
-#include "detector/Settings.hpp"
-#include "detector/TangentsDetector.hpp"
+#include "Line.hpp"
+#include "BoolImage.hpp"
+#include "Settings.hpp"
+#include "TangentsDetector.hpp"
+#include "Timer.hpp"
 
 class LineDetector {
 private:
@@ -15,16 +16,15 @@ private:
     int side;
     const BoolImage &input_contour;
     std::vector<std::pair<int, int>> black_points;
-    std::map<double, std::map<double, int>> lines_parameters;
-    std::vector<Line> lines;
+    std::vector<Line> pre_lines, lines;
     TangentsDetector tangent_detector;
+    Timer line_detector_timer = Timer("LineDetector work time:    %f.\n");
 
     void find_black_points();
-    void find_lines_parameters();
-    void claster_lines_parameters();
-    void find_lines();
+    void find_pre_lines();
+    void cluster_pre_lines();
 
-    void show();
+    void print_timing() noexcept;
 
 public:
 
