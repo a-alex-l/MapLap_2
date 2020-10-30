@@ -29,6 +29,7 @@ public:
     bool operator==(Line line) const;
     bool operator!=(Line line) const;
 
+    friend std::ostream& operator<<(std::ostream &out, const Line &line); // for debug
 };
 
 

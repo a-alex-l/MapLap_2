@@ -55,3 +55,7 @@ bool Line::operator==(Line line) const {
 bool Line::operator!=(Line line) const {
     return !(*this == line);
 }
+
+std::ostream& operator<<(std::ostream &out, const Line &line) { // for debug
+    return out << line.first << " " << line.second;
+}
