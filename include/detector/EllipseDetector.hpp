@@ -15,18 +15,20 @@ private:
     std::vector<std::pair<int, int>> black_points;
     std::vector<Ellipse> pre_ellipses, ellipses;
     TangentsDetector tangent_detector;
-    Timer ellipse_detector_timer = Timer("EllipseDetector work time: %f .\n");
+    Timer ellipse_detector_timer = Timer("EllipseDetector work time: %f.\n");
 
-    void find_pre_ellipses( int y, int x, const std::vector<PointVector> &intersection);
+    void find_pre_ellipses( int y, int x, const std::vector<PointVector> &intersection_1,
+                                          const std::vector<PointVector> &intersection_2);
     void find_pre_ellipses(int y, int x);
     void find_black_points();
     void find_pre_ellipses();
-    void claster_pre_ellipses();
+    void cluster_pre_ellipses();
+    
+    void print_timing() noexcept;
 
 public:
 
     explicit EllipseDetector(const BoolImage &input_contours);
-    ~EllipseDetector();
 
     void detect();
 

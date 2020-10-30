@@ -6,11 +6,13 @@ Detector::Detector(const BoolImage &input_contours) noexcept :
            circle_detector(input_contours) {}
 
 void Detector::detect() {
+    detector_timer.start();
     line_detector.detect();
     circle_detector.detect();
+    print_timing();
 }
 
-Detector::~Detector() noexcept {
+void Detector::print_timing() noexcept {
     detector_timer.stop();
     detector_timer.print();
 }

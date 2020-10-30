@@ -1,18 +1,32 @@
 #include "detector/EllipseDetector.hpp"
 
+#include "opencv2/opencv.hpp" //debug
+static void show(const BoolImage &input_contour, Ellipse l) { //debug
+    static cv::Mat img_result(cv::Size(input_contour.cols(), input_contour.rows()),
+                              CV_8U, cv::Scalar(255, 255, 255));
+    //cv::line(img_result, cv::Point(int(l.get_first().x), int(l.get_first().y)), cv::Point(int(l.get_second().x), int(l.get_second().y)), cv::Scalar(0));
+    cv::imshow("img_Ellipse_result", img_result);
+    //cv::waitKey();
+}
+
 static void print(std::vector<Ellipse> &ellipses) {
     for (auto ellipse : ellipses)
         std::cout << ellipse << "\n";
     std::cout.flush();
 }
 
-void EllipseDetector::find_pre_ellipses(int y, int x, const std::vector<PointVector> &intersection) {
-    for (auto i : intersection) {
+void EllipseDetector::find_pre_ellipses(int y, int x,
+            const std::vector<PointVector> &intersection_1,
+            const std::vector<PointVector> &intersection_2) {
+    for (auto i : intersection_1) {
         int y2 = int(round(i.y)), x2 = int(round(i.x));
-        PointVector tangent1 = tangent_detector.get(y, x), tangent2 = tangent_detector.get(y2, x2);
-        Ellipse ellipse(x, y, x2, y2, tangent1.x, tangent1.y, tangent2.x, tangent2.y);
-        if (ellipse.is_init()) {
-            pre_ellipses.emplace_back(ellipse);
+        for (auto j : intersection_2) {
+            int y3 = int(round(j.y)), x3 = int(round(j.x));
+            PointVector tangent1 = tangent_detector.get(y, x), tangent2 = tangent_detector.get(y2, x2), tangent3 = tangent_detector.get(y3, x3);
+            Ellipse ellipse(x, y, x2, y2, x3, y3, tangent1.x, tangent2.x, tangent3.x, tangent1.y, tangent2.y, tangent3.y);
+            if (ellipse.is_init()) {
+                pre_ellipses.emplace_back(ellipse);
+            }
         }
     }
 }
@@ -22,9 +36,11 @@ void EllipseDetector::find_pre_ellipses(int y, int x) {
     Line tangent = Line(point, point + tangent_detector.get(point.y, point.x) *
                          (input_contour.rows() + input_contour.cols()));
     for (auto i : Settings::check_ellipses) {
-        std::vector<PointVector> intersection =
-                tangent.rotate_around_first(M_PI * i).get_intersection(input_contour);
-        find_pre_ellipses(y, x, intersection);
+        std::vector<PointVector> intersection_1 =
+                tangent.rotate_around_first( M_PI * i).get_intersection(input_contour);
+        std::vector<PointVector> intersection_2 =
+                tangent.rotate_around_first(M_PI * (1 - i)).get_intersection(input_contour);
+        find_pre_ellipses(y, x, intersection_1, intersection_2);
     }
 }
 
@@ -36,15 +52,16 @@ void EllipseDetector::find_black_points() {
 }
 
 void EllipseDetector::find_pre_ellipses() {
-    for (int step = 0; step < Settings::count_of_attempts_find_ellipses; step++) {
+    for (int step = 0; pre_ellipses.size() < Settings::count_of_attempts_find_ellipses; step++) {
         int i = rand() % black_points.size();
         find_pre_ellipses(int(round(black_points[i].first)),
                         int(round(black_points[i].second)));
     }
 }
 
-void EllipseDetector::claster_pre_ellipses() {
+void EllipseDetector::cluster_pre_ellipses() {
     ellipses = pre_ellipses;
+    sort(ellipses.begin(), ellipses.end());
 }
 
 EllipseDetector::EllipseDetector(const BoolImage &input_contours) :
@@ -53,15 +70,17 @@ EllipseDetector::EllipseDetector(const BoolImage &input_contours) :
 
 }
 
-EllipseDetector::~EllipseDetector() {
+void EllipseDetector::print_timing() noexcept {
     ellipse_detector_timer.stop();
     ellipse_detector_timer.print();
 }
 
 void EllipseDetector::detect() {
+    ellipse_detector_timer.start();
     find_black_points();
     find_pre_ellipses();
-    print(pre_ellipses);
-    claster_pre_ellipses();
+    //print(pre_ellipses);
+    cluster_pre_ellipses();
+    print_timing();
     print(ellipses);
 }

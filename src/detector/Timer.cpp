@@ -1,11 +1,11 @@
 #include "detector/Timer.hpp"
 
 Timer::Timer() noexcept {
-    last = std::chrono::steady_clock::now();
+    start();
 }
 
 Timer::Timer(const char* object) noexcept : format_string(object) {
-    last = std::chrono::steady_clock::now();
+    start();
 }
 
 void Timer::start() noexcept {
@@ -14,11 +14,12 @@ void Timer::start() noexcept {
 
 void Timer::stop() noexcept {
     time_pass += (std::chrono::steady_clock::now() - last).count();
-    last = std::chrono::steady_clock::now();
+    start();
 }
 
 void Timer::print() {
-    printf(format_string, time_pass);
+    printf(format_string, time_pass / 1000000000.0);
+    fflush(stdout);
 }
 
 void Timer::zero() noexcept {

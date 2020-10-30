@@ -13,12 +13,13 @@ private:
     const BoolImage &input_contour;
     LineDetector line_detector;
     EllipseDetector circle_detector;
-    Timer detector_timer = Timer("Detector work time: %f .\n");
+    Timer detector_timer = Timer("Detector work time:        %f.\n");
+
+    void print_timing() noexcept;
 
 public:
 
     explicit Detector(const BoolImage &input_contours) noexcept;
-    ~Detector() noexcept;
 
     void detect();
 
