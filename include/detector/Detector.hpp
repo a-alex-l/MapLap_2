@@ -12,7 +12,7 @@ private:
 
     const BoolImage &input_contour;
     LineDetector line_detector;
-    EllipseDetector circle_detector;
+    EllipseDetector ellipse_detector;
     Timer detector_timer = Timer("Detector work time:        %f.\n");
 
     void print_timing() noexcept;
@@ -22,6 +22,9 @@ public:
     explicit Detector(const BoolImage &input_contours) noexcept;
 
     void detect();
+
+    [[nodiscard]] const std::vector<Line>& get_lines() const noexcept;
+    [[nodiscard]] const std::vector<Ellipse>& get_ellipses() const noexcept;
 
 };
 

@@ -1,10 +1,12 @@
 #include "opencv2/opencv.hpp"
 #include "detector/Preprocessing.hpp"
 #include "detector/Detector.hpp"
-#include "detector/Ellipse.hpp"
 
 int main() {
-    cv::Mat img = cv::imread("test_files/AverageTest2s.png");
+    cv::Mat img = cv::imread("../test/test_files/test_1_input.png");
+    if (img.empty()) {
+        return 1;
+    }
     BoolImage img_bool = Preprocessing::make_black_white_image(img);
     BoolImage img_contour = Preprocessing::find_contour_lines(img_bool);
     //cv::imshow("img", img);

@@ -2,7 +2,7 @@
 #define MAPLAP2_0_LINE_HPP
 
 #include "PointVector.hpp"
-#include "BoolImage.hpp"
+#include "detector/BoolImage.hpp"
 
 class Line {
 private:
@@ -25,6 +25,7 @@ public:
 
     [[nodiscard]] const PointVector& get_first() const noexcept;
     [[nodiscard]] const PointVector& get_second() const noexcept;
+    [[nodiscard]] double get_line_thickness() const noexcept;
 
     bool operator==(Line line) const;
     bool operator!=(Line line) const;

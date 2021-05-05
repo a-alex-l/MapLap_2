@@ -1,4 +1,4 @@
-#include "detector/PointVector.hpp"
+#include "shapes/PointVector.hpp"
 #include <cmath>
 
 PointVector::PointVector(double y, double x) noexcept : x(x), y(y) {}
@@ -39,8 +39,8 @@ PointVector PointVector::operator/(double other) const noexcept {
     return PointVector(*this) /= other;
 }
 
-std::ostream& operator<<(std::ostream &out, const PointVector &v) { // for debug
-    return out << "(" << v.y << ", " << v.x << ")";
+std::ostream& operator<<(std::ostream &out, const PointVector &v) {
+    return out << "(" << v.y << "mm, " << v.x << "mm)";
 }
 
 bool PointVector::operator==(const PointVector &other) const noexcept {

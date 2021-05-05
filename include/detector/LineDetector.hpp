@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 
-#include "Line.hpp"
+#include "shapes/Line.hpp"
 #include "BoolImage.hpp"
 #include "Settings.hpp"
 #include "TangentsDetector.hpp"
@@ -31,6 +31,8 @@ public:
     explicit LineDetector(const BoolImage &input_contours);
 
     void detect();
+
+    [[nodiscard]] const std::vector<Line>& get_lines() const noexcept;
 
 };
 

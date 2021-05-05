@@ -1,5 +1,5 @@
 #include "Catch.hpp"
-#include "detector/Line.hpp"
+#include "shapes/Line.hpp"
 
 TEST_CASE("Line Start") { printf("Testing Line\n"); }
 
@@ -24,31 +24,31 @@ TEST_CASE("Line == 2") {
 }
 
 TEST_CASE("Line == 3") {
-    Line a({Fraction(134 / 56), 21524}, {328357196, 42431}), b = a;
+    Line a({134.0 / 56, 21524}, {328357196, 42431}), b = a;
     REQUIRE((a == b));
 }
 
 TEST_CASE("Line == 4") {
-    Line a({Fraction(134 / 56), 21524}, {328357196, 42431});
-    Line b({Fraction(134 / 56), 24}, {2, 4});
+    Line a({134.0 / 56, 21524}, {328357196, 42431});
+    Line b({134.0 / 56, 24}, {2, 4});
     REQUIRE((!(a == b)));
 }
 
 TEST_CASE("Line == 5") {
-    Line a({Fraction(134 / 56), 21524}, {328357196, 42431});
-    Line b({Fraction(134 / 56), 24}, {328357196, 42431});
+    Line a({134.0 / 56, 21524}, {328357196, 42431});
+    Line b({134.0 / 56, 24}, {328357196, 42431});
     REQUIRE((!(a == b)));
 }
 
 TEST_CASE("Line != 1") {
-    Line a({Fraction(134 / 56), 21524}, {328357196, 42431});
-    Line b({Fraction(134 / 56), 24}, {328357196, 42431});
+    Line a({134.0 / 56, 21524}, {328357196, 42431});
+    Line b({134.0 / 56, 24}, {328357196, 42431});
     REQUIRE((a != b));
 }
 
 TEST_CASE("Line != 2") {
-    Line a({Fraction(134 / 56), 21524}, {328357196, 42431});
-    Line b({Fraction(134 / 56), 21524}, {328357196, 42431});
+    Line a({134.0 / 56, 21524}, {328357196, 42431});
+    Line b({134.0 / 56, 21524}, {328357196, 42431});
     REQUIRE((!(a != b)));
 }
 
@@ -59,7 +59,7 @@ TEST_CASE("Line swap 1") {
 }
 
 TEST_CASE("Line swap 2") {
-    Line a(PointVector(Fraction(100, 11), 2), PointVector(3, 4)), b = a;
+    Line a(PointVector(100.0 / 11, 2), PointVector(3, 4)), b = a;
     a.swap();
     REQUIRE((a.swap() == b));
     REQUIRE((a == b));

@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 
-#include "detector/PointVector.hpp"
+#include "shapes/PointVector.hpp"
 #include "detector/BoolImage.hpp"
 #include "detector/Settings.hpp"
 

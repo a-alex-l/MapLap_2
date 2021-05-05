@@ -101,3 +101,7 @@ void LineDetector::print_timing() noexcept {
     line_detector_timer.stop();
     line_detector_timer.print();
 }
+
+const std::vector<Line>& LineDetector::get_lines() const noexcept {
+    return lines;
+}

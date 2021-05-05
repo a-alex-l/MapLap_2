@@ -16,17 +16,13 @@ static void print(std::vector<Ellipse> &ellipses) {
 }
 
 void EllipseDetector::find_pre_ellipses(int y, int x,
-            const std::vector<PointVector> &intersection_1,
-            const std::vector<PointVector> &intersection_2) {
+            const std::vector<PointVector> &intersection_1) {
     for (auto i : intersection_1) {
         int y2 = int(round(i.y)), x2 = int(round(i.x));
-        for (auto j : intersection_2) {
-            int y3 = int(round(j.y)), x3 = int(round(j.x));
-            PointVector tangent1 = tangent_detector.get(y, x), tangent2 = tangent_detector.get(y2, x2), tangent3 = tangent_detector.get(y3, x3);
-            Ellipse ellipse(x, y, x2, y2, x3, y3, tangent1.x, tangent2.x, tangent3.x, tangent1.y, tangent2.y, tangent3.y);
-            if (ellipse.is_init()) {
-                pre_ellipses.emplace_back(ellipse);
-            }
+        PointVector tangent1 = tangent_detector.get(y, x), tangent2 = tangent_detector.get(y2, x2);
+        Ellipse ellipse(x, y, tangent1.x, tangent1.y, x2, y2, tangent2.x, tangent2.y);
+        if (ellipse.is_init()) {
+            pre_ellipses.emplace_back(ellipse);
         }
     }
 }
@@ -36,11 +32,9 @@ void EllipseDetector::find_pre_ellipses(int y, int x) {
     Line tangent = Line(point, point + tangent_detector.get(point.y, point.x) *
                          (input_contour.rows() + input_contour.cols()));
     for (auto i : Settings::check_ellipses) {
-        std::vector<PointVector> intersection_1 =
+        std::vector<PointVector> intersection =
                 tangent.rotate_around_first( M_PI * i).get_intersection(input_contour);
-        std::vector<PointVector> intersection_2 =
-                tangent.rotate_around_first(M_PI * (1 - i)).get_intersection(input_contour);
-        find_pre_ellipses(y, x, intersection_1, intersection_2);
+        find_pre_ellipses(y, x, intersection);
     }
 }
 
@@ -82,5 +76,9 @@ void EllipseDetector::detect() {
     //print(pre_ellipses);
     cluster_pre_ellipses();
     print_timing();
-    print(ellipses);
+    //print(ellipses);
+}
+
+const std::vector<Ellipse> &EllipseDetector::get_ellipses() const noexcept {
+    return ellipses;
 }

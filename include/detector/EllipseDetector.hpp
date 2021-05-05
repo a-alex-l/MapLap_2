@@ -1,10 +1,10 @@
 #ifndef MAPLAP2_0_ELLIPSEDETECTOR_HPP
 #define MAPLAP2_0_ELLIPSEDETECTOR_HPP
 
-#include "Ellipse.hpp"
+#include "shapes/Ellipse.hpp"
 #include "BoolImage.hpp"
 #include "Settings.hpp"
-#include "Line.hpp"
+#include "shapes/Line.hpp"
 #include "TangentsDetector.hpp"
 #include "Timer.hpp"
 
@@ -17,8 +17,7 @@ private:
     TangentsDetector tangent_detector;
     Timer ellipse_detector_timer = Timer("EllipseDetector work time: %f.\n");
 
-    void find_pre_ellipses( int y, int x, const std::vector<PointVector> &intersection_1,
-                                          const std::vector<PointVector> &intersection_2);
+    void find_pre_ellipses( int y, int x, const std::vector<PointVector> &intersection_1);
     void find_pre_ellipses(int y, int x);
     void find_black_points();
     void find_pre_ellipses();
@@ -31,6 +30,8 @@ public:
     explicit EllipseDetector(const BoolImage &input_contours);
 
     void detect();
+
+    [[nodiscard]] const std::vector<Ellipse>& get_ellipses() const noexcept;
 
 };
 

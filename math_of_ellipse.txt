@@ -1,76 +1,56 @@
-Ellipse Equation = A*x^2 + B*x*y + C*y^2 + D*x + E*y = F.
-Keep in mind that Ellipse has 5 degree of freedom.
+Ellipse without rotation has 4 degree of freedom.
+X - x of center, Y - y of center, W - width^2, H - height^2
+Ellipse Equation = (x - X)^2 * H + (y - Y)^2 * W - W * H = 0
 
 Line Equation = a*x + b*y + c, where a^2 + b^2 = 1
 
-We have Three points with tangents:
+We have two points with tangents:
 (x1, y1) (a1, b1, c1)
 (x2, y2) (a2, b2, c2)
-(x3, y3) (a3, b3, c3)
 
-Let's look at Ellipse derivatives by X and Y:
-X) 2*A*x + B*y + D
-Y) c*C*y + B*x + E
+Let's look at Ellipse derivatives by x and y:
+x) 2*H*(x1 - X)
+y) 2*W*(y1 - Y)
 
 Then let's look at tangent derivatives by X and Y:
-X) a
-Y) b
+x) a
+y) b
 
 Now we can make new equations:
-X) 2*A*x + B*y + D = a    // Three pieces
-Y) 2*C*y + B*x + E = b    // Three pieces
-
-And finding of F:
-F = A*x1*x1 + B*x1*y1 + C*y1*y1 + D*x1 + E*y1
+x) 2*H*(x1 - X)*b1 = 2*W*(y1 - Y)*a1
+y) 2*H*(x2 - X)*b2 = 2*W*(y2 - Y)*a2
 
 Ok, here we have a system of equations:
-1) 2*A*x1 + B*y1 + D = a1
-2) 2*A*x2 + B*y2 + D = a2
-3) 2*A*x3 + B*y3 + D = a3
-4) 2*C*y1 + B*x1 + E = a1
-5) 2*C*y2 + B*x2 + E = a2
-6) 2*C*y3 + B*x3 + E = a3
-7) F = A*x1*x1 + B*x1*y1 + C*y1*y1 + D*x1 + E*y1
+H*(x1 - X)*b1 = W*(y1 - Y)*a1,
+H*(x2 - X)*b2 = W*(y2 - Y)*a2,
+(x1 - X)^2 * H + (y1 - Y)^2 * W = W * H,
+(x2 - X)^2 * H + (y2 - Y)^2 * W = W * H
 
 Let's solve it:
 
-1..3)
-    2*A*x1 + B*y1 - a1 = -D = 2*A*x2 + B*y2 - a2
-	2*A*(x1 - x2) + B*(y1 - y2) = a1 - a2
-	2*A = (a1 - a2 - B*(y1 - y2)) / (x1 - x2)
-	A = (a1 - a2 - B*(y1 - y2)) / (2*x1 - 2*x2)
-	D = -x1 * (a1 - a2 - B*(y1 - y2)) / (x1 - x2) - B*y1 + a1
-	(x1 - x2) * D = -a1*x1 + a2*x1 + B*x1*y1 - B*x1*y2 - B*x1*y1 + B*x2*y1 + a1*x1 - a1*x2
-	(x1 - x2) * D = a2*x1 - a1*x2 - B*x1*y2 + B*x2*y1
-	D = (a2*x1 - a1*x2 - B*x1*y2 + B*x2*y1) / (x1 - x2)
+    H*(x1 - X)*b1 = W*(y1 - Y)*a1
+    H = W*(y1 - Y)*a1/((x1 - X)*b1)
 
-	A = (a1 - a2 - B*(y1 - y2)) / (2*x1 - 2*x2) = (a1 - a3 - B*(y1 - y3)) / (2*x1 - 2*x3)
-	(x1 - x3) * (a1 - a2 - B*(y1 - y2)) = (x1 - x2) * (a1 - a3 - B*(y1 - y3))
-	a1*x1 - a1*x3 - a2*x1 + a2*x3 - B*(y1 - y2)*(x1 - x3) = a1*x1 - a1*x2 - a3*x1 + a3*x2 - B*(y1 - y3)*(x1 - x2)
-	- a1*x3 - a2*x1 + a2*x3 - B*(y1 - y2)*(x1 - x3) = - a1*x2 - a3*x1 + a3*x2 - B*(y1 - y3)*(x1 - x2)
-	B*((y1 - y3)*(x1 - x2) - (y1 - y2)*(x1 - x3)) = a1*x3 + a2*x1 - a2*x3 - a1*x2 - a3*x1 + a3*x2
-	B = (a1*x3 + a2*x1 - a2*x3 - a1*x2 - a3*x1 + a3*x2) / ((y1 - y3)*(x1 - x2) - (y1 - y2)*(x1 - x3))
-	B = (a1*x3 + a2*x1 - a2*x3 - a1*x2 - a3*x1 + a3*x2) / (x1*y1 - x1*y3 - x2*y1 + x2*y3 - x1*y1 + x1*y2 + x3*y1 - x3*y2)
-	B = (a1*x3 + a2*x1 - a2*x3 - a1*x2 - a3*x1 + a3*x2) / (- x1*y3 - x2*y1 + x2*y3 + x1*y2 + x3*y1 - x3*y2)
-	B = (a1*(x3 - x2) + a2*(x1 - x3) + a3*(x2 - x1)) / (x1*(y2 - y3) + x2*(y3 - y1) + x3*(y1 - y2))
+    H*(x2 - X)*b2 = W*(y2 - Y)*a2
+    W*(y1 - Y)*a1/((x1 - X)*b1)*(x2 - X)*b2 = W*(y2 - Y)*a2
+    (y1 - Y)*a1*(x2 - X)*b2 = (y2 - Y)*a2*(x1 - X)*b1
+    (y1 - Y)*a1*x2*b2 - (y1 - Y)*a1*X*b2 = (y2 - Y)*a2*x1*b1 - (y2 - Y)*a2*X*b1
+    X*(y2 - Y)*a2*b1 - X*(y1 - Y)*a1*b2 = (y2 - Y)*a2*x1*b1 - (y1 - Y)*a1*x2*b2
+    X = ((y2 - Y)*a2*x1*b1 - (y1 - Y)*a1*x2*b2) / ((y2 - Y)*a2*b1 - (y1 - Y)*a1*b2)
+    H = W*(y1 - Y)*a1/((x1 - ((y2 - Y)*a2*x1*b1 - (y1 - Y)*a1*x2*b2) / ((y2 - Y)*a2*b1 - (y1 - Y)*a1*b2))*b1)
 
-4..6) The same (1..3):
-    C = (b1 - b2 - B*(x1 - x2)) / (2*(y1 - y2))
-    E = (b2*y1 - b1*y2 - B*y1*x2 + B*y2*x1) / (y1 - y2)
-    B = (b1*(y3 - y2) + b2*(y1 - y3) + b3*(y2 - y1)) / (y1*(x2 - x3) + y2*(x3 - x1) + y3*(x1 - x2))
+    (x1 - X)^2 * H + (y1 - Y)^2 * W = W * H
+    (x1 - ((y2 - Y)*a2*x1*b1 - (y1 - Y)*a1*x2*b2) / ((y2 - Y)*a2*b1 - (y1 - Y)*a1*b2))^2 * W * (y1 - Y)*a1/((x1 - ((y2 - Y)*a2*x1*b1 - (y1 - Y)*a1*x2*b2) / ((y2 - Y)*a2*b1 - (y1 - Y)*a1*b2))*b1) + (y1 - Y)^2 * W = W * W*(y1 - Y)*a1/((x1 - ((y2 - Y)*a2*x1*b1 - (y1 - Y)*a1*x2*b2) / ((y2 - Y)*a2*b1 - (y1 - Y)*a1*b2))*b1)
+    W = b1*(x1 - (-a1*b2*x2*(Y - y1) + a2*b1*x1*(Y - y2))/(-a1*b2*(Y - y1) + a2*b1*(Y - y2)))*(a1*(Y - y1)*(x1 - (a1*b2*x2*(-Y + y1) - a2*b1*x1*(-Y + y2))/(a1*b2*(-Y + y1) - a2*b1*(-Y + y2)))/b1 - (Y - y1)^2)/(a1*(Y - y1))
 
-7) F = A*x1*x1 + B*x1*y1 + C*y1*y1 + D*x1 + E*y1
+    (x2 - X)^2 * H + (y2 - Y)^2 * W = W * H
+    Y = ((a1*b2*y1 + a2*b1*y2)*(x1 - x2) + b1*b2*(y1*y1 - y2*y2)) / ((a1*b2 + a2*b1)*(x1 - x2) + 2*b1*b2*(y1 - y2));
+    X = ((a1*b2*x2 + a2*b1*x1)*(y1 - y2) + a1*a2*(x1*x1 - x2*x2)) / ((a1*b2 + a2*b1)*(y1 - y2) + 2*a1*a2*(x1 - x2));
+    W = (x1 - x2)*(a1*b2 + a2*b1)*(a1*(x1 - x2) + b1*(y1 - y2))^2*(a2*(x1 - x2) + b2*(y1 - y2))^2 / ((2*a1*a2*(x1 - x2) + (a1*b2 + a2*b1)*(y1 - y2))^2*((a1*b2 + a2*b1)*(x1 - x2) + 2*b1*b2*(y1 - y2)));
+    H = (y1 - y2)*(a1*b2 + a2*b1)*(a1*(x1 - x2) + b1*(y1 - y2))^2*(a2*(x1 - x2) + b2*(y1 - y2))^2 / ((2*b1*b2*(y1 - y2) + (a1*b2 + a2*b1)*(x1 - x2))^2*((a1*b2 + a2*b1)*(y1 - y2) + 2*a1*a2*(x1 - x2)));
 
 
 
-Eventually:
-	B = (a1*(x3 - x2) + a2*(x1 - x3) + a3*(x2 - x1)) / (x1*(y2 - y3) + x2*(y3 - y1) + x3*(y1 - y2));
 
-    A = (a1 - a2 - B*(y1 - y2)) / (2*(x1 - x2));
-    D = (a2*x1 - a1*x2 - B*x1*y2 + B*x2*y1) / (x1 - x2);
-    C = (b1 - b2 - B*(x1 - x2)) / (2*(y1 - y2));
-    E = (b2*y1 - b1*y2 - B*y1*x2 + B*y2*x1) / (y1 - y2);
 
-    F = A*x1*x1 + B*x1*y1 + C*y1*y1 + D*x1 + E*y1;
 
-	We have 33* and 32+. I think we can reduce, but it good for start. Also I hope on compiler optimization.

@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 
 include_directories(include/ test/)
 
-set(OpenCV_DIR /home/alex/opencv/opencv/build)
+set(OpenCV_DIR /home/alex/git/opencv/build)
 find_package(OpenCV REQUIRED)
 message(STATUS "OpenCV library status:")
 message(STATUS "    version: ${OpenCV_VERSION}")
@@ -16,25 +16,27 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 add_executable(MapLap2_0
         src/main.cpp
 
-        include/detector/Line.hpp
+        include/Writer.h
+        include/shapes/Line.hpp
         include/detector/Timer.hpp
-        include/detector/Ellipse.hpp
+        include/shapes/Ellipse.hpp
         include/detector/Detector.hpp
         include/detector/Settings.hpp
         include/detector/BoolImage.hpp
-        include/detector/PointVector.hpp
+        include/shapes/PointVector.hpp
         include/detector/LineDetector.hpp
         include/detector/Preprocessing.hpp
         include/detector/EllipseDetector.hpp
         include/detector/TangentsDetector.hpp
 
-        src/detector/Line.cpp
+        src/Writer.cpp
+        src/shapes/Line.cpp
         src/detector/Timer.cpp
-        src/detector/Ellipse.cpp
+        src/shapes/Ellipse.cpp
         src/detector/Detector.cpp
         src/detector/Settings.cpp
         src/detector/BoolImage.cpp
-        src/detector/PointVector.cpp
+        src/shapes/PointVector.cpp
         src/detector/LineDetector.cpp
         src/detector/Preprocessing.cpp
         src/detector/EllipseDetector.cpp
@@ -44,29 +46,30 @@ add_executable(MapLap2_0_Test
         test/Catch.hpp
         test/TestAll.cpp
         test/TestLine.cpp
-        test/TestFration.cpp
         test/TestPointVector.cpp
         test/TestPreprocessing.cpp
 
-        include/detector/Line.hpp
+        include/Writer.h
+        include/shapes/Line.hpp
         include/detector/Timer.hpp
-        include/detector/Ellipse.hpp
+        include/shapes/Ellipse.hpp
         include/detector/Detector.hpp
         include/detector/Settings.hpp
         include/detector/BoolImage.hpp
-        include/detector/PointVector.hpp
+        include/shapes/PointVector.hpp
         include/detector/LineDetector.hpp
         include/detector/Preprocessing.hpp
         include/detector/EllipseDetector.hpp
         include/detector/TangentsDetector.hpp
 
-        src/detector/Line.cpp
+        src/Writer.cpp
+        src/shapes/Line.cpp
         src/detector/Timer.cpp
-        src/detector/Ellipse.cpp
+        src/shapes/Ellipse.cpp
         src/detector/Detector.cpp
         src/detector/Settings.cpp
         src/detector/BoolImage.cpp
-        src/detector/PointVector.cpp
+        src/shapes/PointVector.cpp
         src/detector/LineDetector.cpp
         src/detector/Preprocessing.cpp
         src/detector/EllipseDetector.cpp

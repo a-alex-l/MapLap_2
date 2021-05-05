@@ -2,7 +2,7 @@
 #define MAPLAP2_0_BOOLIMAGE_HPP
 
 #include "opencv2/opencv.hpp"
-#include "detector/PointVector.hpp"
+#include "shapes/PointVector.hpp"
 #include <vector>
 
 class BoolImage {  // false == white, true = black !

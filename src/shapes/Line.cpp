@@ -1,4 +1,4 @@
-#include "detector/Line.hpp"
+#include "shapes/Line.hpp"
 
 Line::Line(const PointVector &one, const PointVector &two, double line_thick) noexcept:
             first(one), second(two), line_thickness(line_thick) {}
@@ -56,6 +56,11 @@ bool Line::operator!=(Line line) const {
     return !(*this == line);
 }
 
-std::ostream& operator<<(std::ostream &out, const Line &line) { // for debug
-    return out << line.first << " " << line.second;
+std::ostream& operator<<(std::ostream &out, const Line &line) {
+    return out << "\\draw[black, line width=" << line.get_line_thickness() << "] " <<
+               line.first << " -- " << line.second;
+}
+
+double Line::get_line_thickness() const noexcept {
+    return line_thickness;
 }
